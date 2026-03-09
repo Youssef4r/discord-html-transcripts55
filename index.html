@@ -488,12 +488,16 @@
 function renderTranscript(ticketData) {
     const container = document.getElementById('transcript-container');
     
+    // التحقق من صحة البيانات
     if (!ticketData) {
         container.innerHTML = '<div class="error-message">❌ بيانات غير صالحة</div>';
         return;
     }
     
+    // تجهيز المستخدمين للـ mentions
     const users = {};
+    const roles = {};
+    const channels = {};
     
     // إضافة صاحب التذكرة (باستخدام الاسم المعروض)
     if (ticketData.userId) {
@@ -507,6 +511,7 @@ function renderTranscript(ticketData) {
     
     // إضافة اللي أغلق التذكرة
     if (ticketData.closedBy) {
+        // محاولة جلب الاسم من البيانات
         const closedByName = ticketData.closedByName || 
                              (ticketData.closedBy === ticketData.claimedBy ? ticketData.claimedByName : null) ||
                              'مسؤول';
@@ -526,12 +531,13 @@ function renderTranscript(ticketData) {
     if (ticketData.messages && Array.isArray(ticketData.messages)) {
         ticketData.messages.forEach(msg => {
             if (msg.authorId && msg.author) {
+                // استخدم اسم المؤلف من الرسالة نفسه
                 users[msg.authorId] = msg.author;
             }
         });
     }
     
-    // بناء HTML الرسائل (مختصر)
+    // بناء HTML الرسائل
     let messagesHtml = '';
     
     // رسالة فتح التذكرة
@@ -542,12 +548,117 @@ function renderTranscript(ticketData) {
         </div>
     `;
     
-    // إجابات الأسئلة (مختصر)
+    // إجابات الأسئلة
     if (ticketData.answers) {
-        // ... (كما هو)
+        const answers = ticketData.answers;
+        const questions = ticketData.questions || {};
+        
+        let answersText = '';
+        if (answers.answer1) answersText += `<strong>❓ ${questions.required1 || 'السؤال الأول'}:</strong> ${answers.answer1}<br>`;
+        if (answers.answer2) answersText += `<strong>❓ ${questions.required2 || 'السؤال الثاني'}:</strong> ${answers.answer2}<br>`;
+        if (answers.answer3 && answers.answer3 !== 'لم يتم الإجابة') answersText += `<strong>❓ ${questions.optional1 || 'سؤال اختياري'}:</strong> ${answers.answer3}<br>`;
+        if (answers.answer4 && answers.answer4 !== 'لم يتم الإجابة') answersText += `<strong>❓ ${questions.optional2 || 'سؤال اختياري'}:</strong> ${answers.answer4}<br>`;
+        if (answers.answer5 && answers.answer5 !== 'لم يتم الإجابة') answersText += `<strong>❓ ${questions.optional3 || 'سؤال اختياري'}:</strong> ${answers.answer5}<br>`;
+        
+        if (answersText) {
+            messagesHtml += `
+                <div class="message">
+                    <img class="avatar" src="${ticketData.userAvatar || 'https://cdn.discordapp.com/embed/avatars/0.png'}" alt="User" onerror="this.src='https://cdn.discordapp.com/embed/avatars/0.png'">
+                    <div class="message-content">
+                        <div class="message-header">
+                            <span class="author">${openerName}</span>
+                            <span class="timestamp">${formatDate(ticketData.openedAt)}</span>
+                        </div>
+                        <div class="message-text">
+                            <strong>📝 إجابات الأسئلة:</strong><br>
+                            ${answersText}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
     }
-    
-    // رسالة استلام التذكرة - المعدل
+
+    // رسائل المحادثة
+    if (ticketData.messages && ticketData.messages.length > 0) {
+        ticketData.messages.forEach(msg => {
+            const isBot = msg.authorId === ticketData.botId;
+            const isSupport = ticketData.addedAdmins?.includes(msg.authorId) || msg.authorId === ticketData.claimedBy;
+            
+            let authorClass = '';
+            if (isBot) authorClass = 'bot';
+            else if (isSupport) authorClass = 'support';
+            
+            // استخدام اسم المؤلف من قائمة users
+            const authorName = users[msg.authorId] || msg.author || 'مستخدم';
+            
+            messagesHtml += `
+                <div class="message">
+                    <img class="avatar" src="${msg.avatar || 'https://cdn.discordapp.com/embed/avatars/0.png'}" alt="Avatar" onerror="this.src='https://cdn.discordapp.com/embed/avatars/0.png'">
+                    <div class="message-content">
+                        <div class="message-header">
+                            <span class="author ${authorClass}">${authorName} ${isBot ? '🤖' : ''}</span>
+                            <span class="timestamp">${formatDate(msg.timestamp)}</span>
+                        </div>
+                        <div class="message-text">${msg.content || ''}</div>
+            `;
+            
+            // إضافة الامبيدات
+            if (msg.embeds && msg.embeds.length > 0) {
+                msg.embeds.forEach(embed => {
+                    messagesHtml += `
+                        <div class="embed" style="border-left-color: ${embed.color || '#5865f2'}">
+                            ${embed.title ? `<div class="embed-title">${embed.title}</div>` : ''}
+                            ${embed.description ? `<div class="embed-description">${embed.description}</div>` : ''}
+                    `;
+                    
+                    if (embed.fields && embed.fields.length > 0) {
+                        embed.fields.forEach(field => {
+                            messagesHtml += `
+                                <div class="embed-field">
+                                    <div class="embed-field-name">${field.name}</div>
+                                    <div class="embed-field-value">${field.value}</div>
+                                </div>
+                            `;
+                        });
+                    }
+                    
+                    if (embed.image) {
+                        messagesHtml += `<img class="embed-image" src="${embed.image}" alt="Embed Image" onerror="this.style.display='none'">`;
+                    }
+                    
+                    if (embed.footer) {
+                        messagesHtml += `
+                            <div class="embed-footer">
+                                ${embed.footer.icon ? `<img class="embed-footer-icon" src="${embed.footer.icon}" onerror="this.style.display='none'">` : ''}
+                                ${embed.footer.text}
+                            </div>
+                        `;
+                    }
+                    
+                    messagesHtml += `</div>`;
+                });
+            }
+            
+            // إضافة المرفقات
+            if (msg.attachments && msg.attachments.length > 0) {
+                msg.attachments.forEach(att => {
+                    messagesHtml += `
+                        <div class="attachment">
+                            <a class="attachment-link" href="${att.url}" target="_blank">📎 ${att.name}</a>
+                        </div>
+                    `;
+                });
+            }
+            
+            messagesHtml += `
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    // رسالة استلام التذكرة
     if (ticketData.claimedByName && ticketData.claimedByName !== 'لم يتم الاستلام') {
         const claimerName = users[ticketData.claimedBy] || ticketData.claimedByName;
         messagesHtml += `
@@ -556,8 +667,8 @@ function renderTranscript(ticketData) {
             </div>
         `;
     }
-    
-    // رسالة إغلاق التذكرة - المعدل
+
+    // رسالة إغلاق التذكرة
     if (ticketData.closedAt) {
         const closerName = users[ticketData.closedBy] || ticketData.closedByName || 'غير معروف';
         messagesHtml += `
@@ -568,7 +679,7 @@ function renderTranscript(ticketData) {
             </div>
         `;
     }
-    
+
     // تجميع كل حاجة
     const fullHtml = `
         <div class="header">
@@ -598,6 +709,22 @@ function renderTranscript(ticketData) {
                 <div class="label">الحالة</div>
                 <div class="value">${ticketData.closedAt ? 'مغلقة' : 'مفتوحة'}</div>
             </div>
+            <div class="info-item">
+                <div class="label">إجمالي الرسائل</div>
+                <div class="value">${ticketData.messageCount || 0}</div>
+            </div>
+            <div class="info-item">
+                <div class="label">استدعاءات المستخدم</div>
+                <div class="value">${ticketData.userMentions || 0}</div>
+            </div>
+            <div class="info-item">
+                <div class="label">استدعاءات الدعم</div>
+                <div class="value">${ticketData.adminMentions || 0}</div>
+            </div>
+            <div class="info-item">
+                <div class="label">الأداريين المضافين</div>
+                <div class="value">${ticketData.addedAdmins?.length || 0}</div>
+            </div>
         </div>
 
         <div class="chat-container">
@@ -605,12 +732,16 @@ function renderTranscript(ticketData) {
         </div>
 
         <div class="action-buttons">
-            <button class="btn btn-primary" onclick="window.print()">🖨️ طباعة</button>
-            <button class="btn btn-success" onclick="downloadTranscript()">📥 تحميل</button>
+            <button class="btn btn-primary" onclick="window.print()">
+                🖨️ طباعة
+            </button>
+            <button class="btn btn-success" onclick="downloadTranscript()">
+                📥 تحميل
+            </button>
         </div>
 
         <div class="footer">
-            <p>نظام تذاكر عائلة العمدة - ${formatDate(Math.floor(Date.now() / 1000))}</p>
+            <p>نظام تذاكر عائلة العمدة - تم إنشاء هذه النسخة في ${formatDate(Math.floor(Date.now() / 1000))}</p>
         </div>
     `;
 
