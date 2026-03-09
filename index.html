@@ -106,210 +106,6 @@
             color: #5865f2;
         }
 
-        /* التذكرة الجديدة - نسخة خفيفة */
-        .ticket-header {
-            background: linear-gradient(to bottom, #202225, #2a2c30);
-            border-radius: 16px;
-            padding: 20px;
-            margin: 15px 20px 25px 20px;
-            border: 1px solid #40444b;
-            border-top: 3px solid #5865f2;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        }
-
-        .ticket-title-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 20px;
-            padding-bottom: 12px;
-            border-bottom: 1px solid #40444b;
-        }
-
-        .ticket-title {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .ticket-icon {
-            background: #5865f2;
-            width: 45px;
-            height: 45px;
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 22px;
-        }
-
-        .ticket-id {
-            color: #fff;
-            font-size: 22px;
-            font-weight: 700;
-        }
-
-        .ticket-code {
-            color: #5865f2;
-            font-size: 12px;
-            margin-top: 2px;
-        }
-
-        .ticket-status {
-            background: #2f3136;
-            padding: 6px 16px;
-            border-radius: 30px;
-            border: 1px solid #57f287;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #57f287;
-            animation: pulse 1.5s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        .ticket-status span {
-            color: #57f287;
-            font-weight: 600;
-            font-size: 13px;
-        }
-
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin-bottom: 15px;
-        }
-
-        .info-card {
-            background: #2f3136;
-            border-radius: 12px;
-            padding: 12px;
-            border: 1px solid #40444b;
-        }
-
-        .info-card-header {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 8px;
-        }
-
-        .info-icon {
-            width: 28px;
-            height: 28px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-        }
-
-        .info-label {
-            color: #b9bbbe;
-            font-size: 12px;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-
-        .info-value {
-            color: #fff;
-            font-size: 14px;
-            font-weight: 600;
-            padding-right: 36px;
-        }
-
-        .user-badge, .staff-badge, .mention-badge {
-            padding: 4px 12px;
-            border-radius: 30px;
-            display: inline-block;
-            font-size: 13px;
-        }
-
-        .user-badge {
-            background: #5865f2;
-        }
-
-        .staff-badge {
-            background: #57f287;
-            color: #2f3136;
-            font-weight: 700;
-            margin-left: 6px;
-        }
-
-        .staff-name {
-            color: #b9bbbe;
-            font-size: 12px;
-        }
-
-        .dates-container {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .date-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .date-label {
-            color: #b9bbbe;
-            font-size: 11px;
-            min-width: 40px;
-        }
-
-        .date-value {
-            color: #fff;
-            font-size: 11px;
-            font-weight: 600;
-        }
-
-        .mentions-container {
-            background: #202225;
-            border-radius: 30px;
-            padding: 10px 16px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex-wrap: wrap;
-            border: 1px solid #40444b;
-        }
-
-        .mentions-label {
-            color: #b9bbbe;
-            font-size: 12px;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-
-        .mentions-list {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .mention-badge {
-            background: #5865f2;
-            color: white;
-            padding: 4px 14px;
-            border-radius: 30px;
-            font-size: 13px;
-            font-weight: 600;
-        }
-
         /* منطقة المحادثة */
         .chat-container {
             padding: 20px 25px;
@@ -645,16 +441,15 @@
             100% { transform: rotate(360deg); }
         }
 
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+
         /* للشاشات الصغيرة */
         @media (max-width: 600px) {
             .info-grid {
                 grid-template-columns: 1fr;
-            }
-            
-            .ticket-title-row {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 12px;
             }
         }
     </style>
@@ -892,6 +687,279 @@
                 messagesHtml += `<div class="system-message"><strong>🔒 تم إغلاق التذكرة</strong> بواسطة <strong>${closerName}</strong><br>📝 السبب: ${ticketData.closeReason || 'غير محدد'}<br>⏱️ المدة: ${getDuration(ticketData.duration)}</div>`;
             }
     
+            // ⭐⭐⭐ الجزء العلوي من التذكرة - كل معلومة في سطر منفصل
+            const ticketHeaderHtml = `
+                <div style="
+                    background: linear-gradient(145deg, #202225, #2a2c30);
+                    border-radius: 16px;
+                    padding: 20px;
+                    margin: 15px 20px 25px 20px;
+                    border: 1px solid #40444b;
+                    border-top: 4px solid #5865f2;
+                    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+                ">
+                    <!-- السطر الأول: عنوان التذكرة والرقم -->
+                    <div style="
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+                        margin-bottom: 20px;
+                        padding-bottom: 12px;
+                        border-bottom: 1px solid #40444b;
+                    ">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <span style="
+                                background: #5865f2;
+                                width: 45px;
+                                height: 45px;
+                                border-radius: 14px;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                font-size: 22px;
+                            ">🎫</span>
+                            <div>
+                                <div style="color: #fff; font-size: 22px; font-weight: 700;">${ticketData.fullId || 'دعم فني'}</div>
+                                <div style="color: #5865f2; font-size: 12px; margin-top: 2px;">#${ticketData.id || 'ticket'}</div>
+                            </div>
+                        </div>
+                        <div style="
+                            background: #2f3136;
+                            padding: 6px 16px;
+                            border-radius: 30px;
+                            border: 1px solid #57f287;
+                            display: flex;
+                            align-items: center;
+                            gap: 6px;
+                        ">
+                            <span style="
+                                width: 8px;
+                                height: 8px;
+                                border-radius: 50%;
+                                background: #57f287;
+                                animation: pulse 1.5s infinite;
+                            "></span>
+                            <span style="color: #57f287; font-weight: 600; font-size: 13px;">
+                                ${ticketData.claimedBy ? '✅ مستلمة' : '⏳ في الانتظار'}
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- السطر الثاني: تم فتح تذكرة الدعم الفني -->
+                    <div style="
+                        color: #fff;
+                        font-size: 18px;
+                        font-weight: 600;
+                        margin-bottom: 20px;
+                        padding: 12px 15px;
+                        background: #2f3136;
+                        border-radius: 10px;
+                        border-right: 4px solid #5865f2;
+                    ">
+                        تم فتح تذكرة الدعم الفني
+                    </div>
+
+                    <!-- كل معلومة في سطر منفصل -->
+                    <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px;">
+                        
+                        <!-- سطر 1: صاحب التذكرة -->
+                        <div style="
+                            display: flex;
+                            align-items: center;
+                            gap: 10px;
+                            background: #2f3136;
+                            padding: 12px 15px;
+                            border-radius: 10px;
+                            border: 1px solid #40444b;
+                        ">
+                            <span style="
+                                background: #5865f2;
+                                width: 35px;
+                                height: 35px;
+                                border-radius: 10px;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                font-size: 16px;
+                            ">👤</span>
+                            <span style="
+                                color: #b9bbbe;
+                                font-size: 14px;
+                                font-weight: 600;
+                                min-width: 110px;
+                            ">صاحب التذكرة:</span>
+                            <span style="
+                                background: #5865f2;
+                                color: white;
+                                padding: 5px 15px;
+                                border-radius: 30px;
+                                font-size: 14px;
+                                font-weight: 600;
+                            ">@${users[ticketData.userId] || ticketData.userName || 'مستخدم'}</span>
+                        </div>
+
+                        <!-- سطر 2: تم الاستلام بواسطة -->
+                        <div style="
+                            display: flex;
+                            align-items: center;
+                            gap: 10px;
+                            background: #2f3136;
+                            padding: 12px 15px;
+                            border-radius: 10px;
+                            border: 1px solid #40444b;
+                        ">
+                            <span style="
+                                background: #57f287;
+                                width: 35px;
+                                height: 35px;
+                                border-radius: 10px;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                font-size: 16px;
+                            ">👨‍💼</span>
+                            <span style="
+                                color: #b9bbbe;
+                                font-size: 14px;
+                                font-weight: 600;
+                                min-width: 110px;
+                            ">تم الاستلام بواسطة:</span>
+                            <span style="
+                                background: #57f287;
+                                color: #2f3136;
+                                padding: 5px 15px;
+                                border-radius: 30px;
+                                font-size: 14px;
+                                font-weight: 700;
+                                margin-left: 8px;
+                            ">@${users[ticketData.claimedBy] || ticketData.claimedByName || 'لم يستلم'}</span>
+                            ${ticketData.claimedBy ? `<span style="color: #b9bbbe; font-size: 13px;">(${ticketData.claimedByName})</span>` : ''}
+                        </div>
+
+                        <!-- سطر 3: القسم -->
+                        <div style="
+                            display: flex;
+                            align-items: center;
+                            gap: 10px;
+                            background: #2f3136;
+                            padding: 12px 15px;
+                            border-radius: 10px;
+                            border: 1px solid #40444b;
+                        ">
+                            <span style="
+                                background: #faa61a;
+                                width: 35px;
+                                height: 35px;
+                                border-radius: 10px;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                font-size: 16px;
+                            ">📂</span>
+                            <span style="
+                                color: #b9bbbe;
+                                font-size: 14px;
+                                font-weight: 600;
+                                min-width: 110px;
+                            ">القسم:</span>
+                            <span style="
+                                color: #fff;
+                                font-size: 16px;
+                                font-weight: 600;
+                            ">${ticketData.category || 'دعم فني'}</span>
+                        </div>
+
+                        <!-- سطر 4: التواريخ (سطرين منفصلين) -->
+                        <div style="
+                            background: #2f3136;
+                            padding: 12px 15px;
+                            border-radius: 10px;
+                            border: 1px solid #40444b;
+                        ">
+                            <!-- تاريخ الفتح -->
+                            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                                <span style="
+                                    background: #9b59b6;
+                                    width: 35px;
+                                    height: 35px;
+                                    border-radius: 10px;
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    font-size: 16px;
+                                ">📅</span>
+                                <span style="
+                                    color: #b9bbbe;
+                                    font-size: 14px;
+                                    font-weight: 600;
+                                    min-width: 110px;
+                                ">تاريخ الفتح:</span>
+                                <span style="
+                                    color: #fff;
+                                    font-size: 14px;
+                                    font-weight: 500;
+                                ">${formatDate(ticketData.openedAt)}</span>
+                            </div>
+                            
+                            <!-- تاريخ الاستلام (محاذاة لليمين) -->
+                            <div style="display: flex; align-items: center; gap: 10px; padding-right: 45px;">
+                                <span style="
+                                    color: #b9bbbe;
+                                    font-size: 14px;
+                                    font-weight: 600;
+                                    min-width: 110px;
+                                ">تاريخ الاستلام:</span>
+                                <span style="
+                                    color: #fff;
+                                    font-size: 14px;
+                                    font-weight: 500;
+                                ">${ticketData.claimedAt ? formatDate(ticketData.claimedAt) : 'لم يستلم'}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- سطر المستلمون (آخر حاجة) -->
+                    <div style="
+                        background: #202225;
+                        border-radius: 30px;
+                        padding: 12px 16px;
+                        display: flex;
+                        align-items: center;
+                        gap: 15px;
+                        flex-wrap: wrap;
+                        border: 1px solid #40444b;
+                    ">
+                        <span style="
+                            color: #b9bbbe;
+                            font-size: 12px;
+                            font-weight: 600;
+                            text-transform: uppercase;
+                        ">المستلمون:</span>
+                        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                            ${ticketData.claimedBy ? `
+                            <span style="
+                                background: #5865f2;
+                                color: white;
+                                padding: 4px 14px;
+                                border-radius: 30px;
+                                font-size: 13px;
+                                font-weight: 600;
+                            ">@${users[ticketData.claimedBy] || 'مستخدم'}</span>` : ''}
+                            
+                            ${ticketData.category ? `
+                            <span style="
+                                background: #faa61a;
+                                color: #2f3136;
+                                padding: 4px 14px;
+                                border-radius: 30px;
+                                font-size: 13px;
+                                font-weight: 600;
+                            ">@${ticketData.category}</span>` : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+    
             const fullHtml = `
                 <div class="header">
                     <h1>📋 El Omda Ticket <span>${ticketData.fullId || ticketData.id || 'غير معروف'}</span></h1>
@@ -912,78 +980,7 @@
                     <div class="info-item"><div class="label">استدعاءات</div><div class="value">${ticketData.userMentions || 0}</div></div>
                 </div>
     
-                <!-- ⭐⭐⭐ الجزء العلوي من التذكرة -->
-                <div class="ticket-header">
-                    <div class="ticket-title-row">
-                        <div class="ticket-title">
-                            <span class="ticket-icon">🎫</span>
-                            <div>
-                                <div class="ticket-id">${ticketData.fullId || 'دعم فني'}</div>
-                                <div class="ticket-code">#${ticketData.id || 'ticket'}</div>
-                            </div>
-                        </div>
-                        <div class="ticket-status">
-                            <span class="status-dot"></span>
-                            <span>${ticketData.claimedBy ? '✅ مستلمة' : '⏳ في الانتظار'}</span>
-                        </div>
-                    </div>
-
-                    <div class="info-grid">
-                        <div class="info-card">
-                            <div class="info-card-header">
-                                <span class="info-icon" style="background: #5865f2;">👤</span>
-                                <span class="info-label">صاحب التذكرة</span>
-                            </div>
-                            <div class="info-value">
-                                <span class="user-badge">@${users[ticketData.userId] || ticketData.userName || 'مستخدم'}</span>
-                            </div>
-                        </div>
-
-                        <div class="info-card">
-                            <div class="info-card-header">
-                                <span class="info-icon" style="background: #faa61a;">📂</span>
-                                <span class="info-label">القسم</span>
-                            </div>
-                            <div class="info-value">${ticketData.category || 'دعم فني'}</div>
-                        </div>
-
-                        <div class="info-card">
-                            <div class="info-card-header">
-                                <span class="info-icon" style="background: #57f287;">👨‍💼</span>
-                                <span class="info-label">المسؤول</span>
-                            </div>
-                            <div class="info-value">
-                                <span class="staff-badge">@${users[ticketData.claimedBy] || ticketData.claimedByName || 'لم يستلم'}</span>
-                                ${ticketData.claimedBy ? `<span class="staff-name">(${ticketData.claimedByName})</span>` : ''}
-                            </div>
-                        </div>
-
-                        <div class="info-card">
-                            <div class="info-card-header">
-                                <span class="info-icon" style="background: #9b59b6;">📅</span>
-                                <span class="info-label">التواريخ</span>
-                            </div>
-                            <div class="dates-container">
-                                <div class="date-item">
-                                    <span class="date-label">الفتح:</span>
-                                    <span class="date-value">${formatDate(ticketData.openedAt)}</span>
-                                </div>
-                                <div class="date-item">
-                                    <span class="date-label">الاستلام:</span>
-                                    <span class="date-value">${ticketData.claimedAt ? formatDate(ticketData.claimedAt) : 'لم يستلم'}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mentions-container">
-                        <span class="mentions-label">المستلمون:</span>
-                        <div class="mentions-list">
-                            ${ticketData.claimedBy ? `<span class="mention-badge" style="background: #5865f2;">@${users[ticketData.claimedBy] || 'مستخدم'}</span>` : ''}
-                            ${ticketData.category ? `<span class="mention-badge" style="background: #faa61a; color: #2f3136;">@${ticketData.category}</span>` : ''}
-                        </div>
-                    </div>
-                </div>
+                ${ticketHeaderHtml}
     
                 <div class="chat-container">
                     ${messagesHtml}
