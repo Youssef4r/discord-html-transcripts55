@@ -455,37 +455,47 @@
     
             // الرسائل
             if (ticketData.messages && ticketData.messages.length > 0) {
-                ticketData.messages.forEach(msg => {
-                    const isBot = msg.authorId === ticketData.botId;
-                    const isSupport = ticketData.addedAdmins?.includes(msg.authorId) || msg.authorId === ticketData.claimedBy;
-                    const authorClass = isBot ? 'bot' : (isSupport ? 'support' : '');
-                    const authorName = users[msg.authorId] || msg.author || 'مستخدم';
-                    
-                    // معالجة المحتوى
-                    let displayContent = msg.content || '';
-                    
-                    // تحويل منشن المستخدمين
-                    displayContent = displayContent.replace(/<@!?(\d+)>/g, (match, id) => {
-                        const name = users[id];
-                        return name ? `<span class="user-mention">@${name}</span>` : match;
-                    });
-                    
-                    // تحويل منشن الرتب
-                    displayContent = displayContent.replace(/<@&(\d+)>/g, (match, id) => {
-                        const roleName = roles[id];
-                        return roleName ? `<span class="role-mention">@${roleName}</span>` : match;
-                    });
-                    
-                    messagesHtml += `
-                        <div class="message">
-                            <img class="avatar" src="${msg.avatar || 'https://cdn.discordapp.com/embed/avatars/0.png'}" onerror="this.src='https://cdn.discordapp.com/embed/avatars/0.png'">
-                            <div class="message-content">
-                                <div class="message-header">
-                                    <span class="author ${authorClass}">${authorName} ${isBot ? '🤖' : ''}</span>
-                                    <span class="timestamp">${formatDate(msg.timestamp)}</span>
-                                </div>
-                                <div class="message-text">${displayContent}</div>
-                    `;
+        ticketData.messages.forEach(msg => {
+            const isBot = msg.authorId === ticketData.botId;
+            const isSupport = ticketData.addedAdmins?.includes(msg.authorId) || msg.authorId === ticketData.claimedBy;
+            const authorClass = isBot ? 'bot' : (isSupport ? 'support' : '');
+            
+            // ⭐⭐ استخدم author (الاسم المعروض) مش authorUsername
+            const authorName = msg.author || msg.authorUsername || 'مستخدم';
+            
+            // معالجة المحتوى - نحول المنشنات للأسماء الحقيقية
+            let displayContent = msg.content || '';
+            
+            // منشن المستخدمين - بنستخدم الخريطة اللي جات من البوت
+            displayContent = displayContent.replace(/<@!?(\d+)>/g, (match, id) => {
+                // نشوف لو المستخدم ده في خريطة المستخدمين
+                if (ticketData.users && ticketData.users[id]) {
+                    return `<span class="user-mention">@${ticketData.users[id]}</span>`;
+                }
+                // لو مش موجود، نستخدم ID كاحتياطي
+                return `<span class="user-mention">@مستخدم</span>`;
+            });
+            
+            // منشن الرتب - بنستخدم خريطة الرتب
+            displayContent = displayContent.replace(/<@&(\d+)>/g, (match, id) => {
+                if (ticketData.roles && ticketData.roles[id]) {
+                    return `<span class="role-mention">@${ticketData.roles[id]}</span>`;
+                }
+                return match;
+            });
+            
+            // ... باقي الكود ...
+            
+            messagesHtml += `
+                <div class="message">
+                    <img class="avatar" src="${msg.avatar || 'https://cdn.discordapp.com/embed/avatars/0.png'}" onerror="this.src='https://cdn.discordapp.com/embed/avatars/0.png'">
+                    <div class="message-content">
+                        <div class="message-header">
+                            <span class="author ${authorClass}">${authorName} ${isBot ? '🤖' : ''}</span>
+                            <span class="timestamp">${formatDate(msg.timestamp)}</span>
+                        </div>
+                        <div class="message-text">${displayContent}</div>
+            `;
                     
                     // الامبيدات
                     if (msg.embeds && msg.embeds.length > 0) {
