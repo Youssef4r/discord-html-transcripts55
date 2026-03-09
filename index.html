@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📋 نسخة التذكرة - نظام التذاكر</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Whitney', 'Helvetica Neue', 'Segoe UI', Arial, sans-serif;
+        }
+
+        body {
+            background: #36393f;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #2f3136;
+            border-radius: 8px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        /* Header */
+        .header {
+            background: #202225;
+            padding: 20px 30px;
+            border-bottom: 1px solid #40444b;
+        }
+
+        .header h1 {
+            color: #fff;
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .header h1 span {
+            background: #5865f2;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+
+        .ticket-info {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            color: #b9bbbe;
+            font-size: 14px;
+        }
+
+        .ticket-info div {
+            background: #2f3136;
+            padding: 5px 15px;
+            border-radius: 20px;
+            border: 1px solid #40444b;
+        }
+
+        /* Info Bar */
+        .info-bar {
+            background: #2f3136;
+            padding: 20px 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            border-bottom: 1px solid #40444b;
+        }
+
+        .info-item {
+            background: #202225;
+            padding: 12px 15px;
+            border-radius: 8px;
+        }
+
+        .info-item .label {
+            color: #72767d;
+            font-size: 12px;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        .info-item .value {
+            color: #fff;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .info-item .value.user {
+            color: #5865f2;
+        }
+
+        /* Chat Messages */
+        .chat-container {
+            padding: 20px 30px;
+            background: #36393f;
+        }
+
+        .message-group {
+            margin-bottom: 20px;
+        }
+
+        .message {
+            display: flex;
+            padding: 10px 0;
+            border-bottom: 1px solid #40444b;
+        }
+
+        .message:last-child {
+            border-bottom: none;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-left: 15px;
+            flex-shrink: 0;
+            object-fit: cover;
+        }
+
+        .message-content {
+            flex: 1;
+        }
+
+        .message-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 5px;
+            flex-wrap: wrap;
+        }
+
+        .author {
+            color: #fff;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .author.bot {
+            color: #5865f2;
+        }
+
+        .author.support {
+            color: #57f287;
+        }
+
+        .timestamp {
+            color: #72767d;
+            font-size: 12px;
+        }
+
+        .message-text {
+            color: #dcddde;
+            font-size: 15px;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        /* Embeds */
+        .embed {
+            margin-top: 10px;
+            background: #2f3136;
+            border-left: 4px solid;
+            border-radius: 4px;
+            padding: 15px;
+            max-width: 520px;
+        }
+
+        .embed-title {
+            color: #fff;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .embed-description {
+            color: #dcddde;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .embed-field {
+            margin-top: 8px;
+        }
+
+        .embed-field-name {
+            color: #b9bbbe;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .embed-field-value {
+            color: #dcddde;
+            font-size: 14px;
+        }
+
+        .embed-image {
+            max-width: 100%;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+
+        .embed-footer {
+            color: #72767d;
+            font-size: 12px;
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .embed-footer-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+        }
+
+        /* System Messages */
+        .system-message {
+            background: #2f3136;
+            color: #b9bbbe;
+            padding: 10px 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 14px;
+            margin: 15px 0;
+            border: 1px dashed #40444b;
+        }
+
+        .system-message strong {
+            color: #fff;
+        }
+
+        /* Attachments */
+        .attachment {
+            margin-top: 8px;
+        }
+
+        .attachment-link {
+            color: #5865f2;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .attachment-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            padding: 20px 30px;
+            background: #2f3136;
+            border-top: 1px solid #40444b;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 5px;
+            border: none;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: #5865f2;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #4752c4;
+        }
+
+        .btn-success {
+            background: #57f287;
+            color: #2f3136;
+        }
+
+        .btn-success:hover {
+            background: #46c572;
+        }
+
+        .btn-secondary {
+            background: #4f545c;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #3e434a;
+        }
+
+        /* Footer */
+        .footer {
+            background: #202225;
+            padding: 15px 30px;
+            color: #72767d;
+            font-size: 12px;
+            text-align: center;
+            border-top: 1px solid #40444b;
+        }
+        
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 50px;
+            color: #fff;
+        }
+        
+        .loading-spinner {
+            border: 4px solid #40444b;
+            border-top: 4px solid #5865f2;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* User mention */
+        .user-mention {
+            background: #40444b;
+            color: #fff;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+        
+        /* Role mention */
+        .role-mention {
+            background: #40444b;
+            color: #fff;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+        
+        /* Channel mention */
+        .channel-mention {
+            background: #40444b;
+            color: #fff;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+
+        /* Error message */
+        .error-message {
+            text-align: center;
+            padding: 50px;
+            color: #f44336;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="transcript-container">
+        <div class="loading" id="loading">
+            <div class="loading-spinner"></div>
+            <p>⏳ جاري تحميل بيانات التذكرة...</p>
+        </div>
+    </div>
+
+    <script>
+        // دالة لجلب محتوى URL
+        function getUrlParameter(name) {
+            name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+            const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+            const results = regex.exec(window.location.search);
+            return results === null ? null : decodeURIComponent(results[1].replace(/\+/g, ' '));
+        }
+    
+        // دالة لتنسيق التاريخ
+        function formatDate(timestamp) {
+            if (!timestamp) return 'غير محدد';
+            const date = new Date(timestamp * 1000);
+            return date.toLocaleString('ar-SA', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+        }
+    
+        // دالة لحساب المدة
+        function getDuration(seconds) {
+            if (!seconds) return 'غير محدد';
+            const hours = Math.floor(seconds / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            const secs = seconds % 60;
+            
+            if (hours > 0) return `${hours} ساعة ${minutes} دقيقة ${secs} ثانية`;
+            if (minutes > 0) return `${minutes} دقيقة ${secs} ثانية`;
+            return `${secs} ثانية`;
+        }
+    
+        // دالة لتحويل mentions في النص
+        function formatMessageContent(content, users = {}, roles = {}, channels = {}) {
+            if (!content) return '';
+            
+            // تحويل منشن المستخدمين <@123456789> و <@!123456789>
+            content = content.replace(/<@!?(\d+)>/g, (match, id) => {
+                const user = users[id];
+                return user ? `<span class="user-mention">@${user}</span>` : `<span class="user-mention">@مستخدم غير معروف</span>`;
+            });
+            
+            // تحويل منشن الرتب <@&123456789>
+            content = content.replace(/<@&(\d+)>/g, (match, id) => {
+                const role = roles[id];
+                return role ? `<span class="role-mention">@${role}</span>` : `<span class="role-mention">@رتبة غير معروفة</span>`;
+            });
+            
+            // تحويل منشن القنوات <#123456789>
+            content = content.replace(/<#(\d+)>/g, (match, id) => {
+                const channel = channels[id];
+                return channel ? `<span class="channel-mention">#${channel}</span>` : `<span class="channel-mention">#قناة غير معروفة</span>`;
+            });
+            
+            return content;
+        }
+    
+        // دالة لجمع أسماء المستخدمين من الرسائل
+        function collectUsersAndRoles(ticketData) {
+            const users = {};
+            const roles = {};
+            const channels = {};
+            
+            // إضافة صاحب التذكرة
+            if (ticketData.userId) {
+                users[ticketData.userId] = ticketData.userName || 'مستخدم';
+            }
+            
+            // إضافة المسؤول
+            if (ticketData.claimedBy) {
+                users[ticketData.claimedBy] = ticketData.claimedByName || 'مسؤول';
+            }
+            
+            // إضافة من أغلق التذكرة
+            if (ticketData.closedBy) {
+                users[ticketData.closedBy] = ticketData.closedByName || 'مسؤول';
+            }
+            
+            // إضافة الأداريين المضافين
+            if (ticketData.addedAdmins && Array.isArray(ticketData.addedAdmins)) {
+                ticketData.addedAdmins.forEach(adminId => {
+                    if (!users[adminId]) {
+                        users[adminId] = 'أداري';
+                    }
+                });
+            }
+            
+            // جمع المستخدمين من الرسائل
+            if (ticketData.messages && Array.isArray(ticketData.messages)) {
+                ticketData.messages.forEach(msg => {
+                    if (msg.authorId && msg.author) {
+                        users[msg.authorId] = msg.author;
+                    }
+                });
+            }
+            
+            return { users, roles, channels };
+        }
+    
+        // دالة لعرض التذكرة
+        function renderTranscript(ticketData) {
+            const container = document.getElementById('transcript-container');
+            
+            // إخفاء مؤشر التحميل
+            const loading = document.getElementById('loading');
+            if (loading) loading.style.display = 'none';
+            
+            // التحقق من صحة البيانات
+            if (!ticketData) {
+                container.innerHTML = '<div class="error-message">❌ بيانات غير صالحة</div>';
+                return;
+            }
+            
+            // جمع المستخدمين والرتب
+            const { users, roles, channels } = collectUsersAndRoles(ticketData);
+            
+            // بناء HTML الرسائل
+            let messagesHtml = '';
+            
+            // رسالة فتح التذكرة
+            messagesHtml += `
+                <div class="system-message">
+                    <strong>📌 تم فتح التذكرة</strong> بواسطة <strong>${ticketData.userName || 'مستخدم'}</strong> في ${formatDate(ticketData.openedAt)}
+                </div>
+            `;
+            
+            // إجابات الأسئلة
+            if (ticketData.answers) {
+                const answers = ticketData.answers;
+                const questions = ticketData.questions || {};
+                
+                let answersText = '';
+                if (answers.answer1) answersText += `<strong>❓ ${questions.required1 || 'السؤال الأول'}:</strong> ${answers.answer1}<br>`;
+                if (answers.answer2) answersText += `<strong>❓ ${questions.required2 || 'السؤال الثاني'}:</strong> ${answers.answer2}<br>`;
+                if (answers.answer3 && answers.answer3 !== 'لم يتم الإجابة') answersText += `<strong>❓ ${questions.optional1 || 'سؤال اختياري'}:</strong> ${answers.answer3}<br>`;
+                if (answers.answer4 && answers.answer4 !== 'لم يتم الإجابة') answersText += `<strong>❓ ${questions.optional2 || 'سؤال اختياري'}:</strong> ${answers.answer4}<br>`;
+                if (answers.answer5 && answers.answer5 !== 'لم يتم الإجابة') answersText += `<strong>❓ ${questions.optional3 || 'سؤال اختياري'}:</strong> ${answers.answer5}<br>`;
+                
+                if (answersText) {
+                    messagesHtml += `
+                        <div class="message">
+                            <img class="avatar" src="${ticketData.userAvatar || 'https://cdn.discordapp.com/embed/avatars/0.png'}" alt="User" onerror="this.src='https://cdn.discordapp.com/embed/avatars/0.png'">
+                            <div class="message-content">
+                                <div class="message-header">
+                                    <span class="author">${ticketData.userName || 'مستخدم'}</span>
+                                    <span class="timestamp">${formatDate(ticketData.openedAt)}</span>
+                                </div>
+                                <div class="message-text">
+                                    <strong>📝 إجابات الأسئلة:</strong><br>
+                                    ${answersText}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+    
+            // رسائل المحادثة
+            if (ticketData.messages && ticketData.messages.length > 0) {
+                ticketData.messages.forEach(msg => {
+                    const isBot = msg.authorId === ticketData.botId;
+                    const isSupport = ticketData.addedAdmins?.includes(msg.authorId) || msg.authorId === ticketData.claimedBy;
+                    
+                    let authorClass = '';
+                    if (isBot) authorClass = 'bot';
+                    else if (isSupport) authorClass = 'support';
+                    
+                    const formattedContent = formatMessageContent(msg.content, users, roles, channels);
+                    
+                    messagesHtml += `
+                        <div class="message">
+                            <img class="avatar" src="${msg.avatar || 'https://cdn.discordapp.com/embed/avatars/0.png'}" alt="Avatar" onerror="this.src='https://cdn.discordapp.com/embed/avatars/0.png'">
+                            <div class="message-content">
+                                <div class="message-header">
+                                    <span class="author ${authorClass}">${msg.author} ${isBot ? '🤖' : ''}</span>
+                                    <span class="timestamp">${formatDate(msg.timestamp)}</span>
+                                </div>
+                                <div class="message-text">${formattedContent}</div>
+                    `;
+                    
+                    // إضافة الامبيدات
+                    if (msg.embeds && msg.embeds.length > 0) {
+                        msg.embeds.forEach(embed => {
+                            messagesHtml += `
+                                <div class="embed" style="border-left-color: ${embed.color || '#5865f2'}">
+                                    ${embed.title ? `<div class="embed-title">${embed.title}</div>` : ''}
+                                    ${embed.description ? `<div class="embed-description">${embed.description}</div>` : ''}
+                            `;
+                            
+                            if (embed.fields && embed.fields.length > 0) {
+                                embed.fields.forEach(field => {
+                                    messagesHtml += `
+                                        <div class="embed-field">
+                                            <div class="embed-field-name">${field.name}</div>
+                                            <div class="embed-field-value">${field.value}</div>
+                                        </div>
+                                    `;
+                                });
+                            }
+                            
+                            if (embed.image) {
+                                messagesHtml += `<img class="embed-image" src="${embed.image}" alt="Embed Image" onerror="this.style.display='none'">`;
+                            }
+                            
+                            if (embed.footer) {
+                                messagesHtml += `
+                                    <div class="embed-footer">
+                                        ${embed.footer.icon ? `<img class="embed-footer-icon" src="${embed.footer.icon}" onerror="this.style.display='none'">` : ''}
+                                        ${embed.footer.text}
+                                    </div>
+                                `;
+                            }
+                            
+                            messagesHtml += `</div>`;
+                        });
+                    }
+                    
+                    // إضافة المرفقات
+                    if (msg.attachments && msg.attachments.length > 0) {
+                        msg.attachments.forEach(att => {
+                            messagesHtml += `
+                                <div class="attachment">
+                                    <a class="attachment-link" href="${att.url}" target="_blank">📎 ${att.name}</a>
+                                </div>
+                            `;
+                        });
+                    }
+                    
+                    messagesHtml += `
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+    
+            // رسالة استلام التذكرة
+            if (ticketData.claimedByName && ticketData.claimedByName !== 'لم يتم الاستلام') {
+                messagesHtml += `
+                    <div class="system-message">
+                        <strong>✅ تم استلام التذكرة</strong> بواسطة <strong>${ticketData.claimedByName}</strong> في ${formatDate(ticketData.claimedAt)}
+                    </div>
+                `;
+            }
+    
+            // رسالة إغلاق التذكرة
+            if (ticketData.closedAt) {
+                messagesHtml += `
+                    <div class="system-message">
+                        <strong>🔒 تم إغلاق التذكرة</strong> بواسطة <strong>${ticketData.closedByName || 'غير معروف'}</strong>
+                        <br>📝 السبب: ${ticketData.closeReason || 'غير محدد'}
+                        <br>⏱️ المدة: ${getDuration(ticketData.duration)}
+                    </div>
+                `;
+            }
+    
+            // تجميع كل حاجة
+            const fullHtml = `
+                <div class="header">
+                    <h1>📋 نسخة التذكرة <span>${ticketData.fullId || ticketData.id || 'غير معروف'}</span></h1>
+                    <div class="ticket-info">
+                        <div>👤 ${ticketData.userName || 'مستخدم'}</div>
+                        <div>📂 ${ticketData.category || 'قسم غير محدد'}</div>
+                        <div>📅 ${formatDate(ticketData.openedAt)}</div>
+                        ${ticketData.closedAt ? `<div>🔒 ${formatDate(ticketData.closedAt)}</div>` : ''}
+                    </div>
+                </div>
+    
+                <div class="info-bar">
+                    <div class="info-item">
+                        <div class="label">صاحب التذكرة</div>
+                        <div class="value user">${ticketData.userName || 'مستخدم'}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="label">القسم</div>
+                        <div class="value">${ticketData.category || 'غير محدد'}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="label">المسؤول</div>
+                        <div class="value">${ticketData.claimedByName || 'لم يتم الاستلام'}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="label">الحالة</div>
+                        <div class="value">${ticketData.closedAt ? 'مغلقة' : 'مفتوحة'}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="label">إجمالي الرسائل</div>
+                        <div class="value">${ticketData.messageCount || 0}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="label">استدعاءات المستخدم</div>
+                        <div class="value">${ticketData.userMentions || 0}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="label">استدعاءات الدعم</div>
+                        <div class="value">${ticketData.adminMentions || 0}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="label">الأداريين المضافين</div>
+                        <div class="value">${ticketData.addedAdmins?.length || 0}</div>
+                    </div>
+                </div>
+    
+                <div class="chat-container">
+                    ${messagesHtml}
+                </div>
+    
+                <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="window.print()">
+                        🖨️ طباعة
+                    </button>
+                    <button class="btn btn-success" onclick="downloadTranscript()">
+                        📥 تحميل
+                    </button>
+                </div>
+    
+                <div class="footer">
+                    <p>نظام تذاكر عائلة العمدة - تم إنشاء هذه النسخة في ${formatDate(Math.floor(Date.now() / 1000))}</p>
+                </div>
+            `;
+    
+            container.innerHTML = fullHtml;
+        }
+    
+        // دالة تحميل الملف
+        function downloadTranscript() {
+            const content = document.getElementById('transcript-container').innerHTML;
+            const styles = document.querySelector('style').innerHTML;
+            
+            const html = `
+                <!DOCTYPE html>
+                <html lang="ar" dir="rtl">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>نسخة التذكرة</title>
+                    <style>${styles}</style>
+                </head>
+                <body>
+                    ${content}
+                </body>
+                </html>
+            `;
+            
+            const blob = new Blob([html], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `ticket-${new Date().getTime()}.html`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+    
+        // تحميل البيانات
+        window.onload = async function() {
+            const container = document.getElementById('transcript-container');
+            
+            const id = getUrlParameter('id');
+            const dataParam = getUrlParameter('data');
+            const urlParam = getUrlParameter('url');
+            
+            try {
+                // 1. جلب من API باستخدام ID
+                if (id) {
+                    console.log(`🔍 جلب بيانات التذكرة بالـ ID: ${id}`);
+                    
+                    const response = await fetch(`https://youssef4r.onrender.com/api/transcript/${id}`);
+                    
+                    if (response.ok) {
+                        const result = await response.json();
+                        if (result.success && result.data) {
+                            renderTranscript(result.data);
+                            return;
+                        }
+                    }
+                    
+                    container.innerHTML = `
+                        <div class="system-message" style="padding: 50px; text-align: center;">
+                            ❌ انتهت صلاحية رابط التذكرة
+                            <br><br>
+                            <small>روابط التذاكر صالحة لمدة ساعة واحدة فقط</small>
+                            <br><br>
+                            <button class="btn btn-primary" onclick="window.location.reload()">إعادة المحاولة</button>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                // 2. جلب من URL مباشر
+                if (urlParam) {
+                    console.log(`🔍 جلب بيانات من URL: ${urlParam.substring(0, 50)}...`);
+                    
+                    const response = await fetch(urlParam);
+                    if (response.ok) {
+                        const ticketData = await response.json();
+                        renderTranscript(ticketData);
+                        return;
+                    }
+                }
+                
+                // 3. قراءة من data parameter
+                if (dataParam) {
+                    console.log('🔍 قراءة بيانات من الرابط');
+                    const ticketData = JSON.parse(decodeURIComponent(dataParam));
+                    renderTranscript(ticketData);
+                    return;
+                }
+                
+                // لو مفيش بيانات
+                container.innerHTML = `
+                    <div class="system-message" style="padding: 50px; text-align: center;">
+                        ❌ لا توجد بيانات للتذكرة
+                        <br><br>
+                        <small>تأكد من صحة الرابط</small>
+                    </div>
+                `;
+                
+            } catch (error) {
+                console.error('❌ خطأ:', error);
+                container.innerHTML = `
+                    <div class="system-message" style="padding: 50px; text-align: center; color: #f44336;">
+                        ❌ خطأ في تحميل بيانات التذكرة: ${error.message}
+                        <br><br>
+                        <button class="btn btn-primary" onclick="window.location.reload()">إعادة المحاولة</button>
+                    </div>
+                `;
+            }
+        };
+    </script>
+</body>
+</html>
