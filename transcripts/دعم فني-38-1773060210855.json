@@ -1,0 +1,286 @@
+{
+  "id": "دعم فني",
+  "fullId": "دعم فني-38",
+  "userId": "1443976695328804935",
+  "userName": "[A-03]  Homos ⚡",
+  "userTag": "youssef_ffr",
+  "userAvatar": "https://cdn.discordapp.com/avatars/1443976695328804935/6d08ac742023c11855c9638fe627c0da.webp",
+  "category": "دعم فني",
+  "categoryKey": "دعم فني",
+  "openedAt": 1773060144,
+  "closedAt": 1773060205,
+  "claimedBy": "1443976695328804935",
+  "claimedByName": "[A-03]  Homos ⚡",
+  "claimedAt": 1773060151,
+  "closedBy": "1443976695328804935",
+  "closedByName": "[A-03]  Homos ⚡",
+  "closeReason": "ssssadsadada",
+  "answers": {
+    "answer1": "ssssafsaf",
+    "answer2": "sssdaawsfd",
+    "answer3": null,
+    "answer4": null,
+    "answer5": null
+  },
+  "questions": {
+    "required1": "ما سبب فتحك للتذكره",
+    "required2": "الايدي الخاص بك دسكورد",
+    "optional1": null,
+    "optional2": null,
+    "optional3": null
+  },
+  "userMentions": 1,
+  "adminMentions": 1,
+  "messageCount": 13,
+  "addedAdmins": [
+    "1443976695328804935"
+  ],
+  "messages": [
+    {
+      "id": "1480546296132665414",
+      "author": "El Omda Ticket",
+      "authorId": "1478979701891534970",
+      "authorUsername": "El Omda Ticket",
+      "avatar": "https://cdn.discordapp.com/avatars/1478979701891534970/f3db0c8df11cd947646af27e3341c184.webp",
+      "content": "@[A-03]  Homos ⚡ @🎟️〢الدعم・الفني",
+      "rawContent": "<@1443976695328804935> <@&1458544712507199671>",
+      "timestamp": 1773060144,
+      "embeds": [
+        {
+          "title": "🎫 دعم فني-38",
+          "description": "**تم فتح تذكرة الدعم الفني**\n\n👤 **صاحب التذكرة:** @[A-03]  Homos ⚡\n👨‍💼 **تم الاستلام بواسطة:** @[A-03]  Homos ⚡ (youssef_ffr)\n📂 **القسم:** دعم فني\n📅 **تاريخ الفتح:** <t:1773060144:F>\n📅 **تاريخ الاستلام:** <t:1773060151:R>\n📊 **الحالة:** ✅ مستلمة",
+          "color": "#00ff00",
+          "fields": [
+            {
+              "name": "📝 إجابات الأسئلة:",
+              "value": "────────────────"
+            },
+            {
+              "name": "ما سبب فتحك للتذكره",
+              "value": "ssssafsaf"
+            },
+            {
+              "name": "الايدي الخاص بك دسكورد",
+              "value": "sssdaawsfd"
+            }
+          ],
+          "image": null,
+          "footer": {
+            "text": "سيتم نقل الامبيد لتحت بعد 20 رسالة"
+          }
+        }
+      ],
+      "attachments": []
+    },
+    {
+      "id": "1480546324892876842",
+      "author": "El Omda Ticket",
+      "authorId": "1478979701891534970",
+      "authorUsername": "El Omda Ticket",
+      "avatar": "https://cdn.discordapp.com/avatars/1478979701891534970/f3db0c8df11cd947646af27e3341c184.webp",
+      "content": "✅ **تم استلام التذكرة بواسطة:** @[A-03]  Homos ⚡ ([A-03]  Homos ⚡)",
+      "rawContent": "✅ **تم استلام التذكرة بواسطة:** <@1443976695328804935> ([A-03]  Homos ⚡)",
+      "timestamp": 1773060151,
+      "embeds": [],
+      "attachments": []
+    },
+    {
+      "id": "1480546333067706388",
+      "author": "[A-03]  Homos ⚡",
+      "authorId": "1443976695328804935",
+      "authorUsername": "youssef_ffr",
+      "avatar": "https://cdn.discordapp.com/avatars/1443976695328804935/6d08ac742023c11855c9638fe627c0da.webp",
+      "content": "dasda",
+      "rawContent": "dasda",
+      "timestamp": 1773060153,
+      "embeds": [],
+      "attachments": []
+    },
+    {
+      "id": "1480546335194091582",
+      "author": "[A-03]  Homos ⚡",
+      "authorId": "1443976695328804935",
+      "authorUsername": "youssef_ffr",
+      "avatar": "https://cdn.discordapp.com/avatars/1443976695328804935/6d08ac742023c11855c9638fe627c0da.webp",
+      "content": "sadasd",
+      "rawContent": "sadasd",
+      "timestamp": 1773060153,
+      "embeds": [],
+      "attachments": []
+    },
+    {
+      "id": "1480546337597554731",
+      "author": "[A-03]  Homos ⚡",
+      "authorId": "1443976695328804935",
+      "authorUsername": "youssef_ffr",
+      "avatar": "https://cdn.discordapp.com/avatars/1443976695328804935/6d08ac742023c11855c9638fe627c0da.webp",
+      "content": "sa",
+      "rawContent": "sa",
+      "timestamp": 1773060154,
+      "embeds": [],
+      "attachments": []
+    },
+    {
+      "id": "1480546345264877679",
+      "author": "[A-03]  Homos ⚡",
+      "authorId": "1443976695328804935",
+      "authorUsername": "youssef_ffr",
+      "avatar": "https://cdn.discordapp.com/avatars/1443976695328804935/6d08ac742023c11855c9638fe627c0da.webp",
+      "content": "@El Omda Ticket",
+      "rawContent": "<@1478979701891534970>",
+      "timestamp": 1773060155,
+      "embeds": [],
+      "attachments": []
+    },
+    {
+      "id": "1480546352986591382",
+      "author": "[A-03]  Homos ⚡",
+      "authorId": "1443976695328804935",
+      "authorUsername": "youssef_ffr",
+      "avatar": "https://cdn.discordapp.com/avatars/1443976695328804935/6d08ac742023c11855c9638fe627c0da.webp",
+      "content": "@[A-03]  Homos ⚡",
+      "rawContent": "<@1443976695328804935>",
+      "timestamp": 1773060157,
+      "embeds": [],
+      "attachments": []
+    },
+    {
+      "id": "1480546368115441776",
+      "author": "[A-03]  Homos ⚡",
+      "authorId": "1443976695328804935",
+      "authorUsername": "youssef_ffr",
+      "avatar": "https://cdn.discordapp.com/avatars/1443976695328804935/6d08ac742023c11855c9638fe627c0da.webp",
+      "content": "@[A-19] Ahmed ElOmda.",
+      "rawContent": "<@1329118739353960578>",
+      "timestamp": 1773060161,
+      "embeds": [],
+      "attachments": []
+    },
+    {
+      "id": "1480546411895591072",
+      "author": "[A-03]  Homos ⚡",
+      "authorId": "1443976695328804935",
+      "authorUsername": "youssef_ffr",
+      "avatar": "https://cdn.discordapp.com/avatars/1443976695328804935/6d08ac742023c11855c9638fe627c0da.webp",
+      "content": "@〢ElOmda Bot",
+      "rawContent": "<@&1463154557415850155>",
+      "timestamp": 1773060171,
+      "embeds": [],
+      "attachments": []
+    },
+    {
+      "id": "1480546504316817539",
+      "author": "El Omda Ticket",
+      "authorId": "1478979701891534970",
+      "authorUsername": "El Omda Ticket",
+      "avatar": "https://cdn.discordapp.com/avatars/1478979701891534970/f3db0c8df11cd947646af27e3341c184.webp",
+      "content": "",
+      "rawContent": "",
+      "timestamp": 1773060193,
+      "embeds": [
+        {
+          "title": "👨‍💼 تم إضافة أداري",
+          "description": "@[A-03]  Homos ⚡ - تمت إضافته للتذكرة بواسطة @[A-03]  Homos ⚡",
+          "color": "#5865f2",
+          "fields": [
+            {
+              "name": "🏷️ رقم التذكرة",
+              "value": "دعم فني-38"
+            },
+            {
+              "name": "📂 القسم",
+              "value": "دعم فني"
+            }
+          ],
+          "image": null,
+          "footer": null
+        }
+      ],
+      "attachments": []
+    },
+    {
+      "id": "1480546521287229490",
+      "author": "El Omda Ticket",
+      "authorId": "1478979701891534970",
+      "authorUsername": "El Omda Ticket",
+      "avatar": "https://cdn.discordapp.com/avatars/1478979701891534970/f3db0c8df11cd947646af27e3341c184.webp",
+      "content": "@[A-03]  Homos ⚡",
+      "rawContent": "<@1443976695328804935>",
+      "timestamp": 1773060197,
+      "embeds": [
+        {
+          "title": "📢 استدعاء صاحب التذكرة",
+          "description": "@[A-03]  Homos ⚡ - تم استدعائك من قبل @[A-03]  Homos ⚡",
+          "color": "#ffd700",
+          "fields": [
+            {
+              "name": "🏷️ رقم التذكرة",
+              "value": "دعم فني-38"
+            },
+            {
+              "name": "📂 القسم",
+              "value": "دعم فني"
+            }
+          ],
+          "image": null,
+          "footer": null
+        }
+      ],
+      "attachments": []
+    },
+    {
+      "id": "1480546551729356800",
+      "author": "El Omda Ticket",
+      "authorId": "1478979701891534970",
+      "authorUsername": "El Omda Ticket",
+      "avatar": "https://cdn.discordapp.com/avatars/1478979701891534970/f3db0c8df11cd947646af27e3341c184.webp",
+      "content": "",
+      "rawContent": "",
+      "timestamp": 1773060205,
+      "embeds": [
+        {
+          "title": "🔒 تم إغلاق التذكرة",
+          "description": "**دعم فني-38**\n\n👤 **صاحب التذكرة:** @[A-03]  Homos ⚡\n👨‍💼 **تم الإغلاق بواسطة:** @[A-03]  Homos ⚡",
+          "color": "#ff0000",
+          "fields": [
+            {
+              "name": "📅 تاريخ الفتح",
+              "value": "<t:1773060144:F>"
+            },
+            {
+              "name": "📅 تاريخ الإغلاق",
+              "value": "<t:1773060205:R>"
+            },
+            {
+              "name": "📝 سبب الإغلاق",
+              "value": "ssssadsadada"
+            }
+          ],
+          "image": null,
+          "footer": null
+        }
+      ],
+      "attachments": []
+    },
+    {
+      "id": "1480546555256770772",
+      "author": "El Omda Ticket",
+      "authorId": "1478979701891534970",
+      "authorUsername": "El Omda Ticket",
+      "avatar": "https://cdn.discordapp.com/avatars/1478979701891534970/f3db0c8df11cd947646af27e3341c184.webp",
+      "content": "**⚙️ أزرار التحكم النهائية:**",
+      "rawContent": "**⚙️ أزرار التحكم النهائية:**",
+      "timestamp": 1773060205,
+      "embeds": [],
+      "attachments": []
+    }
+  ],
+  "duration": 61,
+  "botId": "1478979701891534970",
+  "users": {
+    "1443976695328804935": "[A-03]  Homos ⚡"
+  },
+  "roles": {},
+  "roleColors": {},
+  "categoryRoleId": "1458544712507199671"
+}
