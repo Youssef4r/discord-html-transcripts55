@@ -418,23 +418,20 @@
             return `${secs} ثانية`;
         }
     
-      // دالة لتحويل mentions في النص - نسخة مبسطة وشغالة 100%
-function formatMessageContent(content, users = {}) {
+    // دالة لتحويل mentions في النص - نسخة متكاملة للمستخدمين والرتب
+function formatMessageContent(content, users = {}, roles = {}) {
     if (!content) return '';
     
     // تحويل منشن المستخدمين <@123456789> و <@!123456789>
     content = content.replace(/<@!?(\d+)>/g, (match, id) => {
-        // لو لقينا اسم المستخدم في users object
-        if (users[id]) {
-            return `@${users[id]}`;
-        }
-        // لو لأ، سيبه زي ما هو
-        return match;
+        const user = users[id];
+        return user ? `<span class="user-mention">@${user}</span>` : match;
     });
     
     // تحويل منشن الرتب <@&123456789>
     content = content.replace(/<@&(\d+)>/g, (match, id) => {
-        return match; // مؤقتاً سيبه زي ما هو
+        const role = roles[id];
+        return role ? `<span class="role-mention">@${role}</span>` : match;
     });
     
     return content;
