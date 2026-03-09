@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>📋 نسخة التذكرة - El Omda Ticket</title>
+    <title>📋 نسخة التذكرة - نظام تذاكر عائلة العمدة</title>
     <style>
         * {
             margin: 0;
@@ -43,6 +43,7 @@
             display: flex;
             align-items: center;
             gap: 15px;
+            letter-spacing: 0.5px;
         }
 
         .header h1 span {
@@ -51,6 +52,7 @@
             border-radius: 40px;
             font-size: 18px;
             font-weight: 600;
+            box-shadow: 0 4px 10px rgba(88, 101, 242, 0.3);
         }
 
         .ticket-info {
@@ -67,6 +69,8 @@
             border: 1px solid #40444b;
             color: #b9bbbe;
             font-size: 15px;
+            font-weight: 500;
+            backdrop-filter: blur(5px);
         }
 
         .ticket-info div strong {
@@ -88,7 +92,13 @@
             background: #202225;
             padding: 15px 20px;
             border-radius: 12px;
+            transition: transform 0.2s ease;
             border: 1px solid #40444b;
+        }
+
+        .info-item:hover {
+            transform: translateY(-2px);
+            border-color: #5865f2;
         }
 
         .info-item .label {
@@ -96,12 +106,14 @@
             font-size: 13px;
             margin-bottom: 8px;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .info-item .value {
             color: #fff;
             font-size: 18px;
             font-weight: 600;
+            line-height: 1.4;
         }
 
         .info-item .value.user {
@@ -152,6 +164,7 @@
             color: #fff;
             font-weight: 700;
             font-size: 18px;
+            letter-spacing: 0.3px;
         }
 
         .author.bot {
@@ -179,55 +192,7 @@
             padding: 5px 0;
         }
 
-        /* تنسيق الأسئلة والأجوبة */
-        .questions-box {
-            background: #202225;
-            border-radius: 12px;
-            padding: 20px;
-            margin: 10px 0 15px 0;
-            border: 1px solid #40444b;
-            border-right: 4px solid #5865f2;
-        }
-
-        .question-item {
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 1px dashed #40444b;
-        }
-
-        .question-item:last-child {
-            border-bottom: none;
-            margin-bottom: 0;
-            padding-bottom: 0;
-        }
-
-        .question-label {
-            color: #b9bbbe;
-            font-size: 14px;
-            margin-bottom: 5px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .question-label i {
-            color: #5865f2;
-            font-style: normal;
-            font-size: 16px;
-        }
-
-        .question-answer {
-            color: #fff;
-            font-size: 16px;
-            font-weight: 500;
-            background: #2f3136;
-            padding: 10px 15px;
-            border-radius: 8px;
-            margin-top: 5px;
-            border: 1px solid #40444b;
-        }
-
-        /* ⭐⭐⭐ تنسيق المنشنات والرتب - الأهم هنا */
+        /* ⭐⭐⭐ تنسيق المنشنات الجديد - الأهم */
         .user-mention {
             background: #5865f2;
             color: white;
@@ -237,8 +202,16 @@
             display: inline-block;
             font-size: 0.95em;
             margin: 2px 4px;
+            cursor: pointer;
             transition: all 0.2s ease;
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .user-mention:hover {
+            background: #4752c4;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
         }
         
         .role-mention {
@@ -249,16 +222,27 @@
             display: inline-block;
             margin: 2px 4px;
             font-size: 0.95em;
+            cursor: pointer;
             transition: all 0.2s ease;
             border: 1px solid rgba(255,255,255,0.2);
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
             text-shadow: 0 1px 2px rgba(0,0,0,0.3);
         }
 
-        /* ألوان الرتب حسب النوع - هنطبقها مباشرة من البيانات */
-        .role-mention[data-color] {
-            background-color: attr(data-color color);
+        .role-mention:hover {
+            filter: brightness(1.1);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
         }
+
+        /* ألوان الرتب حسب التصنيف */
+        .role-mention[data-category="admin"] { background: #f04747; }
+        .role-mention[data-category="mod"] { background: #43b581; }
+        .role-mention[data-category="support"] { background: #3498db; }
+        .role-mention[data-category="owner"] { background: #faa61a; color: #2f3136; }
+        .role-mention[data-category="vip"] { background: #9b59b6; }
+        .role-mention[data-category="booster"] { background: #ff7b9c; }
+        .role-mention[data-category="member"] { background: #95a5a6; }
 
         /* الامبيدات */
         .embed {
@@ -291,12 +275,17 @@
             border-bottom: 1px solid #40444b;
         }
 
+        .embed-field:last-child {
+            border-bottom: none;
+        }
+
         .embed-field-name {
             color: #b9bbbe;
             font-size: 14px;
             font-weight: 600;
             margin-bottom: 6px;
             text-transform: uppercase;
+            letter-spacing: 0.3px;
         }
 
         .embed-field-value {
@@ -338,6 +327,7 @@
 
         .system-message strong {
             color: #fff;
+            font-weight: 700;
         }
 
         /* المرفقات */
@@ -352,6 +342,7 @@
             background: #202225;
             border-radius: 8px;
             margin: 5px 0;
+            transition: all 0.2s ease;
         }
 
         .attachment-link:hover {
@@ -393,6 +384,7 @@
         .btn-primary:hover {
             background: #4752c4;
             transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(88, 101, 242, 0.4);
         }
 
         .btn-success {
@@ -403,6 +395,7 @@
         .btn-success:hover {
             background: #46c572;
             transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(87, 242, 135, 0.3);
         }
 
         .footer {
@@ -412,6 +405,7 @@
             font-size: 14px;
             text-align: center;
             border-top: 2px solid #40444b;
+            line-height: 1.6;
         }
         
         .loading {
@@ -434,13 +428,18 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+
+        /* فصل العناصر */
+        .spacer {
+            height: 10px;
+        }
     </style>
 </head>
 <body>
     <div class="container" id="transcript-container">
         <div class="loading" id="loading">
             <div class="loading-spinner"></div>
-            <p>⏳ جاري تحميل بيانات التذكرة من El Omda Ticket...</p>
+            <p>⏳ جاري تحميل بيانات التذكرة...</p>
         </div>
     </div>
 
@@ -470,83 +469,44 @@
             if (!seconds) return 'غير محدد';
             const minutes = Math.floor(seconds / 60);
             const secs = seconds % 60;
-            if (minutes > 0) return `${minutes} دقيقة و ${secs} ثانية`;
+            if (minutes > 0) return `${minutes} دقيقة ${secs} ثانية`;
             return `${secs} ثانية`;
         }
 
-        // ⭐⭐⭐ دالة تحويل اللون الهكس إلى لون مقروء
-        function hexToRgb(hex) {
-            if (!hex) return null;
-            hex = hex.replace('#', '');
-            if (hex.length === 3) {
-                hex = hex.split('').map(c => c + c).join('');
-            }
-            if (hex.length === 6) {
-                const r = parseInt(hex.substring(0, 2), 16);
-                const g = parseInt(hex.substring(2, 4), 16);
-                const b = parseInt(hex.substring(4, 6), 16);
-                return { r, g, b };
-            }
-            return null;
+        // ⭐⭐ دالة تحديد فئة الرتبة بناءً على الاسم
+        function getRoleCategory(roleName) {
+            if (!roleName) return 'member';
+            
+            const name = roleName.toLowerCase();
+            if (name.includes('ادارة') || name.includes('admin') || name.includes('owner')) return 'admin';
+            if (name.includes('مشرف') || name.includes('mod')) return 'mod';
+            if (name.includes('دعم') || name.includes('support') || name.includes('helper')) return 'support';
+            if (name.includes('vip') || name.includes('مميز')) return 'vip';
+            if (name.includes('بوستر') || name.includes('booster')) return 'booster';
+            if (name.includes('مالك') || name.includes('المالك')) return 'owner';
+            
+            return 'member';
         }
 
-        // ⭐⭐⭐ دالة حساب تباين النص (أبيض أو أسود)
-        function getContrastColor(hexColor) {
-            const rgb = hexToRgb(hexColor);
-            if (!rgb) return '#ffffff';
-            const brightness = (rgb.r * 299 + rgb.g * 587 + rgb.b * 114) / 1000;
-            return brightness > 128 ? '#000000' : '#ffffff';
-        }
-
-        // ⭐⭐⭐ دالة معالجة الألوان الحقيقية للرتب
-        function processRoleColors(ticketData) {
-            const roleColors = {};
-            
-            // استخدام الألوان من البيانات إذا كانت موجودة
-            if (ticketData.roleColors) {
-                Object.assign(roleColors, ticketData.roleColors);
+        // ⭐⭐ دالة استخراج اللون من بيانات الرتبة
+        function getRoleColor(roleId, roleName, roleColors) {
+            if (roleColors && roleColors[roleId]) {
+                return roleColors[roleId];
             }
             
-            // إضافة ألوان افتراضية للرتب المعروفة
-            const defaultColors = {
-                'ادارة': '#f04747',
+            // ألوان افتراضية حسب الفئة
+            const category = getRoleCategory(roleName);
+            const categoryColors = {
                 'admin': '#f04747',
+                'mod': '#43b581',
+                'support': '#3498db',
                 'owner': '#faa61a',
-                'المالك': '#faa61a',
-                'مدير': '#faa61a',
-                'مطور': '#9b59b6',
-                'developer': '#9b59b6',
-                'دعم': '#43b581',
-                'support': '#43b581',
-                'حرامي': '#f04747', // ⭐ رتبة حرامي باللون الأحمر
-                'harami': '#f04747',
-                'مساعد': '#3498db',
-                'helper': '#3498db',
-                'عضو': '#95a5a6',
-                'member': '#95a5a6',
-                'vip': '#ff8c42',
-                'مميز': '#ff8c42',
+                'vip': '#9b59b6',
                 'booster': '#ff7b9c',
-                'داعم': '#ff7b9c'
+                'member': '#95a5a6'
             };
             
-            // تطبيق الألوان الافتراضية على الرتب
-            if (ticketData.roles) {
-                Object.keys(ticketData.roles).forEach(roleId => {
-                    const roleName = ticketData.roles[roleId];
-                    if (roleName && !roleColors[roleId]) {
-                        const lowerName = roleName.toLowerCase();
-                        for (const [key, color] of Object.entries(defaultColors)) {
-                            if (lowerName.includes(key)) {
-                                roleColors[roleId] = color;
-                                break;
-                            }
-                        }
-                    }
-                });
-            }
-            
-            return roleColors;
+            return categoryColors[category] || '#5865f2';
         }
     
         function renderTranscript(ticketData) {
@@ -561,7 +521,7 @@
             
             const users = ticketData.users || {};
             const roles = ticketData.roles || {};
-            const roleColors = processRoleColors(ticketData);
+            const roleColors = ticketData.roleColors || {};
             
             let messagesHtml = '';
             
@@ -569,55 +529,30 @@
             const openerName = users[ticketData.userId] || ticketData.userName || 'مستخدم';
             messagesHtml += `<div class="system-message"><strong>📌 تم فتح التذكرة</strong> بواسطة <strong>${openerName}</strong> في ${formatDate(ticketData.openedAt)}</div>`;
             
-            // ⭐⭐⭐ تنسيق الأسئلة بشكل منفصل وجميل
+            // الأسئلة
             if (ticketData.answers) {
                 const answers = ticketData.answers;
                 const questions = ticketData.questions || {};
                 
-                let questionsHtml = '<div class="questions-box">';
-                questionsHtml += '<div style="display:flex;align-items:center;gap:10px;margin-bottom:15px;"><span style="background:#5865f2;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;">📝</span><span style="color:#fff;font-size:18px;font-weight:700;">إجابات الأسئلة</span></div>';
+                let answersText = '';
+                if (answers.answer1) answersText += `<div style="margin-bottom:10px;"><strong>❓ ${questions.required1 || 'السؤال الأول'}:</strong> ${answers.answer1}</div>`;
+                if (answers.answer2) answersText += `<div style="margin-bottom:10px;"><strong>❓ ${questions.required2 || 'السؤال الثاني'}:</strong> ${answers.answer2}</div>`;
+                if (answers.answer3 && answers.answer3 !== 'لم يتم الإجابة') answersText += `<div><strong>❓ ${questions.optional1 || 'سؤال اختياري'}:</strong> ${answers.answer3}</div>`;
                 
-                if (answers.answer1) {
-                    questionsHtml += `
-                        <div class="question-item">
-                            <div class="question-label"><i>❓</i> ${questions.required1 || 'السؤال الأول'}</div>
-                            <div class="question-answer">${answers.answer1}</div>
-                        </div>
-                    `;
-                }
-                
-                if (answers.answer2) {
-                    questionsHtml += `
-                        <div class="question-item">
-                            <div class="question-label"><i>❓</i> ${questions.required2 || 'السؤال الثاني'}</div>
-                            <div class="question-answer">${answers.answer2}</div>
-                        </div>
-                    `;
-                }
-                
-                if (answers.answer3 && answers.answer3 !== 'لم يتم الإجابة') {
-                    questionsHtml += `
-                        <div class="question-item">
-                            <div class="question-label"><i>❓</i> ${questions.optional1 || 'سؤال اختياري'}</div>
-                            <div class="question-answer">${answers.answer3}</div>
-                        </div>
-                    `;
-                }
-                
-                questionsHtml += '</div>';
-                
-                messagesHtml += `
-                    <div class="message">
-                        <img class="avatar" src="${ticketData.userAvatar || 'https://cdn.discordapp.com/embed/avatars/0.png'}" onerror="this.src='https://cdn.discordapp.com/embed/avatars/0.png'">
-                        <div class="message-content">
-                            <div class="message-header">
-                                <span class="author">${openerName}</span>
-                                <span class="timestamp">${formatDate(ticketData.openedAt)}</span>
+                if (answersText) {
+                    messagesHtml += `
+                        <div class="message">
+                            <img class="avatar" src="${ticketData.userAvatar || 'https://cdn.discordapp.com/embed/avatars/0.png'}" onerror="this.src='https://cdn.discordapp.com/embed/avatars/0.png'">
+                            <div class="message-content">
+                                <div class="message-header">
+                                    <span class="author">${openerName}</span>
+                                    <span class="timestamp">${formatDate(ticketData.openedAt)}</span>
+                                </div>
+                                <div class="message-text"><strong style="font-size:18px;">📝 إجابات الأسئلة:</strong><br>${answersText}</div>
                             </div>
-                            ${questionsHtml}
                         </div>
-                    </div>
-                `;
+                    `;
+                }
             }
     
             // الرسائل
@@ -629,7 +564,7 @@
                     
                     const authorName = users[msg.authorId] || msg.author || msg.authorUsername || 'مستخدم';
                     
-                    // معالجة المحتوى
+                    // ⭐⭐ معالجة المنشنات وعرضها بالألوان
                     let displayContent = msg.content || '';
                     
                     // منشن المستخدمين
@@ -641,13 +576,13 @@
                         return `<span class="user-mention" title="ID: ${id}">@مستخدم</span>`;
                     });
                     
-                    // ⭐⭐⭐ منشن الرتب - الأهم هنا مع الألوان الحقيقية
+                    // ⭐⭐⭐ منشن الرتب - الأهم هنا مع الألوان
                     displayContent = displayContent.replace(/<@&(\d+)>/g, (match, id) => {
                         const roleName = roles[id];
                         if (roleName) {
-                            const bgColor = roleColors[id] || '#5865f2';
-                            const textColor = getContrastColor(bgColor);
-                            return `<span class="role-mention" style="background: ${bgColor}; color: ${textColor};" title="ID: ${id}">@${roleName}</span>`;
+                            const roleColor = getRoleColor(id, roleName, roleColors);
+                            const category = getRoleCategory(roleName);
+                            return `<span class="role-mention" style="background: ${roleColor};" data-category="${category}" title="ID: ${id}">@${roleName}</span>`;
                         }
                         return match;
                     });
@@ -677,10 +612,14 @@
                                     // معالجة المنشنات في قيمة الحقل
                                     fieldValue = fieldValue.replace(/<@!?(\d+)>/g, (m, id) => {
                                         const name = users[id];
-                                        return name ? `@${name}` : m;
+                                        return name ? `<span class="user-mention" style="display:inline;padding:2px 8px;">@${name}</span>` : m;
                                     }).replace(/<@&(\d+)>/g, (m, id) => {
                                         const roleName = roles[id];
-                                        return roleName ? `@${roleName}` : m;
+                                        if (roleName) {
+                                            const roleColor = getRoleColor(id, roleName, roleColors);
+                                            return `<span class="role-mention" style="background: ${roleColor}; display:inline;padding:2px 8px;">@${roleName}</span>`;
+                                        }
+                                        return m;
                                     });
                                     
                                     messagesHtml += `
@@ -753,7 +692,7 @@
                 </div>
     
                 <div class="footer">
-                    <p>El Omda Ticket • تم إنشاء هذه النسخة في ${formatDate(Math.floor(Date.now() / 1000))}</p>
+                    <p>نظام تذاكر عائلة العمدة • تم إنشاء هذه النسخة في ${formatDate(Math.floor(Date.now() / 1000))}</p>
                     <p style="margin-top:8px;font-size:12px;">جميع الحقوق محفوظة © 2026</p>
                 </div>
             `;
@@ -764,7 +703,7 @@
         function downloadTranscript() {
             const content = document.getElementById('transcript-container').innerHTML;
             const styles = document.querySelector('style').innerHTML;
-            const html = `<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>نسخة التذكرة - El Omda Ticket</title><style>${styles}</style></head><body>${content}</body></html>`;
+            const html = `<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>نسخة التذكرة</title><style>${styles}</style></head><body>${content}</body></html>`;
             const blob = new Blob([html], { type: 'text/html' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
