@@ -3,663 +3,222 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>📋 نسخة التذكرة - نظام التذاكر</title>
+    <title>📋 نسخة التذكرة - نظام التذاكر المطور</title>
     <style>
+        /* التنسيقات الأساسية المستوحاة من ديسكورد */
         * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+            margin: 0; padding: 0; box-sizing: border-box;
             font-family: 'Whitney', 'Helvetica Neue', 'Segoe UI', Arial, sans-serif;
         }
 
-        body {
-            background: #36393f;
-            min-height: 100vh;
-            padding: 20px;
-        }
+        body { background: #36393f; min-height: 100vh; padding: 20px; color: #dcddde; }
 
         .container {
-            max-width: 900px;
-            margin: 0 auto;
-            background: #2f3136;
-            border-radius: 8px;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
-            overflow: hidden;
+            max-width: 1000px; margin: 0 auto;
+            background: #2f3136; border-radius: 8px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3); overflow: hidden;
         }
 
         .header {
-            background: #202225;
-            padding: 20px 30px;
+            background: #202225; padding: 25px;
             border-bottom: 1px solid #40444b;
         }
 
-        .header h1 {
-            color: #fff;
-            font-size: 24px;
-            font-weight: 600;
-            margin-bottom: 10px;
-        }
+        .header h1 { color: #fff; font-size: 22px; display: flex; align-items: center; gap: 10px; }
+        .header h1 span { background: #5865f2; padding: 2px 10px; border-radius: 4px; font-size: 14px; }
 
-        .header h1 span {
-            background: #5865f2;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 16px;
-            margin-right: 10px;
-        }
-
-        .ticket-info {
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-            color: #b9bbbe;
-            font-size: 14px;
-        }
-
-        .ticket-info div {
-            background: #2f3136;
-            padding: 5px 15px;
-            border-radius: 20px;
-            border: 1px solid #40444b;
-        }
+        .ticket-info { display: flex; gap: 15px; margin-top: 15px; flex-wrap: wrap; }
+        .ticket-info div { background: #2f3136; padding: 5px 12px; border-radius: 4px; font-size: 13px; border: 1px solid #40444b; }
 
         .info-bar {
-            background: #2f3136;
-            padding: 20px 30px;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            border-bottom: 1px solid #40444b;
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px; padding: 20px; background: #2f3136; border-bottom: 1px solid #40444b;
         }
 
-        .info-item {
-            background: #202225;
-            padding: 12px 15px;
-            border-radius: 8px;
-        }
+        .info-item { background: #202225; padding: 10px; border-radius: 6px; }
+        .info-item .label { color: #72767d; font-size: 11px; text-transform: uppercase; margin-bottom: 4px; }
+        .info-item .value { color: #fff; font-weight: 500; font-size: 14px; }
 
-        .info-item .label {
-            color: #72767d;
-            font-size: 12px;
-            margin-bottom: 5px;
-            text-transform: uppercase;
-        }
+        .chat-container { padding: 20px; background: #36393f; }
 
-        .info-item .value {
-            color: #fff;
-            font-size: 16px;
-            font-weight: 500;
-        }
+        .message { display: flex; padding: 15px 5px; margin: 5px 0; transition: background 0.2s; }
+        .message:hover { background: rgba(4, 4, 5, 0.07); }
 
-        .info-item .value.user {
-            color: #5865f2;
-        }
+        .avatar { width: 40px; height: 40px; border-radius: 50%; margin-left: 15px; flex-shrink: 0; }
 
-        .chat-container {
-            padding: 20px 30px;
-            background: #36393f;
-        }
+        .message-content { flex: 1; min-width: 0; }
+        .message-header { margin-bottom: 4px; }
+        .author { color: #fff; font-weight: 500; margin-left: 8px; }
+        .author.bot-tag { background: #5865f2; color: white; font-size: 10px; padding: 1px 4px; border-radius: 3px; margin-right: 5px; }
+        .timestamp { color: #72767d; font-size: 12px; }
 
-        .message {
-            display: flex;
-            padding: 10px 0;
-            border-bottom: 1px solid #40444b;
-        }
+        .message-text { font-size: 15px; line-height: 1.4; white-space: pre-wrap; word-wrap: break-word; }
 
-        .message:last-child {
-            border-bottom: none;
+        /* تجميل المنشنات */
+        .mention {
+            background: rgba(88, 101, 242, 0.3);
+            color: #dee0fc;
+            padding: 0 4px; border-radius: 3px;
+            font-weight: 500; cursor: pointer;
         }
+        .mention:hover { background: #5865f2; color: #fff; }
 
-        .avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            margin-left: 15px;
-            flex-shrink: 0;
-            object-fit: cover;
-        }
-
-        .message-content {
-            flex: 1;
-        }
-
-        .message-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 5px;
-            flex-wrap: wrap;
-        }
-
-        .author {
-            color: #fff;
-            font-weight: 600;
-            font-size: 16px;
-        }
-
-        .author.bot {
-            color: #5865f2;
-        }
-
-        .author.support {
-            color: #57f287;
-        }
-
-        .timestamp {
-            color: #72767d;
-            font-size: 12px;
-        }
-
-        .message-text {
-            color: #dcddde;
-            font-size: 15px;
-            line-height: 1.5;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-        }
-
-        /* ⭐⭐ تنسيق المنشنات الجديد */
-        .user-mention {
-            background: #5865f2;
-            color: white;
-            padding: 2px 8px;
-            border-radius: 20px;
-            font-weight: 500;
-            display: inline-block;
-            font-size: 0.95em;
-            margin: 0 2px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .user-mention:hover {
-            background: #4752c4;
-            transform: translateY(-1px);
-        }
-        
-        .role-mention {
-            background: #5865f2;
-            color: white;
-            padding: 2px 10px;
-            border-radius: 20px;
-            font-weight: 500;
-            display: inline-block;
-            margin: 0 2px;
-            font-size: 0.95em;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            border: 1px solid rgba(255,255,255,0.2);
-        }
-
-        .role-mention:hover {
-            filter: brightness(1.1);
-            transform: translateY(-1px);
-        }
-
-        /* ألوان الرتب المختلفة */
-        .role-mention[data-color="red"] { background: #f04747; }
-        .role-mention[data-color="green"] { background: #43b581; }
-        .role-mention[data-color="blue"] { background: #3498db; }
-        .role-mention[data-color="yellow"] { background: #faa61a; color: #2f3136; }
-        .role-mention[data-color="purple"] { background: #9b59b6; }
-        .role-mention[data-color="pink"] { background: #ff7b9c; }
-        .role-mention[data-color="orange"] { background: #ff8c42; }
-        .role-mention[data-color="brown"] { background: #8b5a2b; }
-        .role-mention[data-color="gray"] { background: #95a5a6; color: #2f3136; }
-        .role-mention[data-color="black"] { background: #2c3e50; }
-        .role-mention[data-color="white"] { background: #ecf0f1; color: #2f3136; }
-        
         .embed {
-            margin-top: 10px;
-            background: #2f3136;
-            border-left: 4px solid;
-            border-radius: 4px;
-            padding: 15px;
-            max-width: 520px;
-        }
-
-        .embed-title {
-            color: #fff;
-            font-weight: 600;
-            margin-bottom: 8px;
-        }
-
-        .embed-description {
-            color: #dcddde;
-            font-size: 14px;
-            margin-bottom: 8px;
-        }
-
-        .embed-field {
-            margin-top: 8px;
-        }
-
-        .embed-field-name {
-            color: #b9bbbe;
-            font-size: 14px;
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-
-        .embed-field-value {
-            color: #dcddde;
-            font-size: 14px;
-        }
-
-        .embed-image {
-            max-width: 100%;
-            border-radius: 4px;
-            margin-top: 10px;
+            margin-top: 8px; padding: 12px;
+            border-left: 4px solid #1e1f22; background: #2b2d31;
+            border-radius: 4px; max-width: 520px;
         }
 
         .system-message {
-            background: #2f3136;
-            color: #b9bbbe;
-            padding: 10px 15px;
-            border-radius: 8px;
-            text-align: center;
-            font-size: 14px;
-            margin: 15px 0;
-            border: 1px dashed #40444b;
+            text-align: center; margin: 20px 0; color: #b9bbbe;
+            border-top: 1px solid #40444b; padding-top: 10px; font-size: 13px;
         }
 
-        .system-message strong {
-            color: #fff;
-        }
-
-        .attachment-link {
-            color: #5865f2;
-            text-decoration: none;
-            font-size: 14px;
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 10px;
-            padding: 20px 30px;
-            background: #2f3136;
-            border-top: 1px solid #40444b;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
+        .action-buttons { padding: 20px; text-align: center; background: #2f3136; }
         .btn {
-            padding: 10px 20px;
-            border-radius: 5px;
-            border: none;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.2s ease;
-            text-decoration: none;
+            padding: 10px 25px; border-radius: 3px; border: none;
+            cursor: pointer; font-weight: bold; margin: 0 5px;
         }
+        .btn-print { background: #4e5058; color: white; }
+        .btn-save { background: #248046; color: white; }
 
-        .btn-primary {
-            background: #5865f2;
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: #4752c4;
-        }
-
-        .btn-success {
-            background: #57f287;
-            color: #2f3136;
-        }
-
-        .btn-success:hover {
-            background: #46c572;
-        }
-
-        .footer {
-            background: #202225;
-            padding: 15px 30px;
-            color: #72767d;
-            font-size: 12px;
-            text-align: center;
-            border-top: 1px solid #40444b;
-        }
-        
-        .loading {
-            text-align: center;
-            padding: 50px;
-            color: #fff;
-        }
-        
-        .loading-spinner {
-            border: 4px solid #40444b;
-            border-top: 4px solid #5865f2;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 20px auto;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+        @media print { .action-buttons { display: none; } }
     </style>
 </head>
 <body>
-    <div class="container" id="transcript-container">
-        <div class="loading" id="loading">
-            <div class="loading-spinner"></div>
-            <p>⏳ جاري تحميل بيانات التذكرة...</p>
-        </div>
+    <div id="transcript-container" class="container">
+        <div style="padding: 50px; text-align: center;">⏳ جاري معالجة بيانات التذكرة...</div>
     </div>
 
     <script>
-        function getUrlParameter(name) {
-            name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
-            const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
-            const results = regex.exec(window.location.search);
-            return results === null ? null : decodeURIComponent(results[1].replace(/\+/g, ' '));
-        }
-    
-        function formatDate(timestamp) {
-            if (!timestamp) return 'غير محدد';
-            const date = new Date(timestamp * 1000);
-            return date.toLocaleString('en-US', {
-                weekday: 'long',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-                hour: 'numeric',
-                minute: '2-digit',
-                hour12: true
-            });
-        }
-    
-        function getDuration(seconds) {
-            if (!seconds) return 'غير محدد';
-            const minutes = Math.floor(seconds / 60);
-            const secs = seconds % 60;
-            if (minutes > 0) return `${minutes} دقيقة ${secs} ثانية`;
-            return `${secs} ثانية`;
+        function formatDate(ts) {
+            if (!ts) return "غير معروف";
+            const date = new Date(ts * 1000);
+            return date.toLocaleString('ar-EG', { dateStyle: 'long', timeStyle: 'short' });
         }
 
-        // ⭐⭐ دالة لاستخراج اللون من نص أو تحديد لون مناسب
-        function getRoleColor(roleName, roleId) {
-            if (!roleName) return '#5865f2';
+        function parseContent(content, users = {}, roles = {}) {
+            if (!content) return "";
             
-            // ألوان افتراضية بناءً على اسم الرتبة
-            const colorMap = {
-                'ادارة': '#f04747',
-                'admin': '#f04747',
-                'owner': '#f04747',
-                'المالك': '#faa61a',
-                'مدير': '#faa61a',
-                'مطور': '#9b59b6',
-                'developer': '#9b59b6',
-                'دعم': '#43b581',
-                'support': '#43b581',
-                'مساعد': '#3498db',
-                'helper': '#3498db',
-                'عضو': '#95a5a6',
-                'member': '#95a5a6',
-                'vip': '#ff8c42',
-                'مميز': '#ff8c42',
-                'booster': '#ff7b9c',
-                'داعم': '#ff7b9c'
-            };
-            
-            // نشوف لو في لون محدد للرتبة في البيانات
-            for (const [key, color] of Object.entries(colorMap)) {
-                if (roleName.toLowerCase().includes(key)) {
-                    return color;
-                }
-            }
-            
-            // لو الرتبة لها ID معين، نستخدم لون ثابت
-            if (roleId) {
-                // بنستخدم الـ ID عشان نولد لون مميز للرتبة
-                const hash = roleId.split('').reduce((acc, char) => {
-                    return char.charCodeAt(0) + ((acc << 5) - acc);
-                }, 0);
-                const hue = Math.abs(hash % 360);
-                return `hsl(${hue}, 70%, 55%)`;
-            }
-            
-            return '#5865f2';
+            // تنظيف النص من أكواد HTML لمنع الـ XSS
+            let safeContent = content.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+            // 1. منشن المستخدمين <@ID> أو <@!ID>
+            safeContent = safeContent.replace(/&lt;@!?(\d+)&gt;/g, (match, id) => {
+                const name = users[id] || id;
+                return `<span class="mention">@${name}</span>`;
+            });
+
+            // 2. منشن الرتب <@&ID>
+            safeContent = safeContent.replace(/&lt;@&amp;(\d+)&gt;/g, (match, id) => {
+                const roleName = roles[id] || `رتبة-${id}`;
+                return `<span class="mention">@${roleName}</span>`;
+            });
+
+            // 3. منشن القنوات <#ID>
+            safeContent = safeContent.replace(/&lt;#(\d+)&gt;/g, (match, id) => {
+                return `<span class="mention">#قناة-${id}</span>`;
+            });
+
+            return safeContent;
         }
-    
-        function renderTranscript(ticketData) {
+
+        function renderTranscript(data) {
             const container = document.getElementById('transcript-container');
-            const loading = document.getElementById('loading');
-            if (loading) loading.style.display = 'none';
-            
-            if (!ticketData) {
-                container.innerHTML = '<div style="text-align:center;padding:50px;color:#f44336;">❌ بيانات غير صالحة</div>';
-                return;
-            }
-            
-            const users = ticketData.users || {};
-            const roles = ticketData.roles || {};
-            
-            // ⭐⭐ تحضير الرتب مع ألوانها
-            const roleColors = {};
-            if (ticketData.roleColors) {
-                Object.assign(roleColors, ticketData.roleColors);
-            } else {
-                // لو مفيش ألوان في البيانات، نستخدم ألوان افتراضية
-                Object.keys(roles).forEach(roleId => {
-                    roleColors[roleId] = getRoleColor(roles[roleId], roleId);
-                });
-            }
-            
-            let messagesHtml = '';
-            
-            // رسالة فتح التذكرة
-            const openerName = users[ticketData.userId] || ticketData.userName || 'مستخدم';
-            messagesHtml += `<div class="system-message"><strong>📌 تم فتح التذكرة</strong> بواسطة <strong>${openerName}</strong> في ${formatDate(ticketData.openedAt)}</div>`;
-            
-            // الأسئلة
-            if (ticketData.answers) {
-                const answers = ticketData.answers;
-                const questions = ticketData.questions || {};
-                
-                let answersText = '';
-                if (answers.answer1) answersText += `<strong>❓ ${questions.required1 || 'السؤال الأول'}:</strong> ${answers.answer1}<br>`;
-                if (answers.answer2) answersText += `<strong>❓ ${questions.required2 || 'السؤال الثاني'}:</strong> ${answers.answer2}<br>`;
-                if (answers.answer3 && answers.answer3 !== 'لم يتم الإجابة') answersText += `<strong>❓ ${questions.optional1 || 'سؤال اختياري'}:</strong> ${answers.answer3}<br>`;
-                
-                if (answersText) {
-                    messagesHtml += `
-                        <div class="message">
-                            <img class="avatar" src="${ticketData.userAvatar || 'https://cdn.discordapp.com/embed/avatars/0.png'}" onerror="this.src='https://cdn.discordapp.com/embed/avatars/0.png'">
-                            <div class="message-content">
-                                <div class="message-header">
-                                    <span class="author">${openerName}</span>
-                                    <span class="timestamp">${formatDate(ticketData.openedAt)}</span>
-                                </div>
-                                <div class="message-text"><strong>📝 إجابات الأسئلة:</strong><br>${answersText}</div>
-                            </div>
-                        </div>
-                    `;
-                }
-            }
-    
-            // الرسائل
-            if (ticketData.messages && ticketData.messages.length > 0) {
-                ticketData.messages.forEach(msg => {
-                    const isBot = msg.authorId === ticketData.botId;
-                    const isSupport = ticketData.addedAdmins?.includes(msg.authorId) || msg.authorId === ticketData.claimedBy;
-                    const authorClass = isBot ? 'bot' : (isSupport ? 'support' : '');
-                    
-                    // استخدام الاسم المعروض
-                    const authorName = users[msg.authorId] || msg.author || msg.authorUsername || 'مستخدم';
-                    
-                    // معالجة المحتوى
-                    let displayContent = msg.content || '';
-                    
-                    // ⭐⭐ منشن المستخدمين - بالأسماء الحقيقية
-                    displayContent = displayContent.replace(/<@!?(\d+)>/g, (match, id) => {
-                        const userName = users[id];
-                        if (userName) {
-                            return `<span class="user-mention" title="ID: ${id}">@${userName}</span>`;
-                        }
-                        return `<span class="user-mention" title="ID: ${id}">@مستخدم</span>`;
-                    });
-                    
-                    // ⭐⭐ منشن الرتب - بالأسماء الحقيقية والألوان
-                    displayContent = displayContent.replace(/<@&(\d+)>/g, (match, id) => {
-                        const roleName = roles[id];
-                        const roleColor = roleColors[id] || '#5865f2';
-                        if (roleName) {
-                            return `<span class="role-mention" style="background: ${roleColor};" title="ID: ${id}">@${roleName}</span>`;
-                        }
-                        return match;
-                    });
-                    
-                    messagesHtml += `
-                        <div class="message">
-                            <img class="avatar" src="${msg.avatar || 'https://cdn.discordapp.com/embed/avatars/0.png'}" onerror="this.src='https://cdn.discordapp.com/embed/avatars/0.png'">
-                            <div class="message-content">
-                                <div class="message-header">
-                                    <span class="author ${authorClass}">${authorName} ${isBot ? '🤖' : ''}</span>
-                                    <span class="timestamp">${formatDate(msg.timestamp)}</span>
-                                </div>
-                                <div class="message-text">${displayContent}</div>
-                    `;
-                    
-                    // الامبيدات
-                    if (msg.embeds && msg.embeds.length > 0) {
-                        msg.embeds.forEach(embed => {
-                            messagesHtml += `<div class="embed" style="border-left-color: ${embed.color || '#5865f2'}">`;
-                            if (embed.title) messagesHtml += `<div class="embed-title">${embed.title}</div>`;
-                            if (embed.description) messagesHtml += `<div class="embed-description">${embed.description}</div>`;
-                            
-                            if (embed.fields) {
-                                embed.fields.forEach(field => {
-                                    let fieldValue = field.value || '';
-                                    
-                                    // معالجة المنشنات في قيمة الحقل
-                                    fieldValue = fieldValue.replace(/<@!?(\d+)>/g, (m, id) => {
-                                        const name = users[id];
-                                        return name ? `@${name}` : m;
-                                    }).replace(/<@&(\d+)>/g, (m, id) => {
-                                        const roleName = roles[id];
-                                        return roleName ? `@${roleName}` : m;
-                                    });
-                                    
-                                    messagesHtml += `
-                                        <div class="embed-field">
-                                            <div class="embed-field-name">${field.name}</div>
-                                            <div class="embed-field-value">${fieldValue}</div>
-                                        </div>
-                                    `;
-                                });
-                            }
-                            
-                            if (embed.image) messagesHtml += `<img class="embed-image" src="${embed.image}">`;
-                            messagesHtml += `</div>`;
-                        });
-                    }
-                    
-                    // المرفقات
-                    if (msg.attachments && msg.attachments.length > 0) {
-                        msg.attachments.forEach(att => {
-                            messagesHtml += `<div class="attachment"><a class="attachment-link" href="${att.url}" target="_blank">📎 ${att.name}</a></div>`;
-                        });
-                    }
-                    
-                    messagesHtml += `</div></div>`;
-                });
-            }
-    
-            // رسالة الاستلام
-            if (ticketData.claimedByName && ticketData.claimedByName !== 'لم يتم الاستلام' && ticketData.claimedAt) {
-                const claimerName = users[ticketData.claimedBy] || ticketData.claimedByName;
-                messagesHtml += `<div class="system-message"><strong>✅ تم استلام التذكرة</strong> بواسطة <strong>${claimerName}</strong> في ${formatDate(ticketData.claimedAt)}</div>`;
-            }
-    
-            // رسالة الإغلاق
-            if (ticketData.closedAt) {
-                const closerName = users[ticketData.closedBy] || ticketData.closedByName || 'غير معروف';
-                messagesHtml += `<div class="system-message"><strong>🔒 تم إغلاق التذكرة</strong> بواسطة <strong>${closerName}</strong><br>📝 السبب: ${ticketData.closeReason || 'غير محدد'}<br>⏱️ المدة: ${getDuration(ticketData.duration)}</div>`;
-            }
-    
-            // العرض النهائي
-            const fullHtml = `
+            const users = data.users || {};
+            const roles = data.roles || {};
+
+            let html = `
                 <div class="header">
-                    <h1>📋 نسخة التذكرة <span>${ticketData.fullId || ticketData.id || 'غير معروف'}</span></h1>
+                    <h1><span>تذكرة</span> ${data.id || 'بدون عنوان'}</h1>
                     <div class="ticket-info">
-                        <div>👤 ${users[ticketData.userId] || ticketData.userName || 'مستخدم'}</div>
-                        <div>📂 ${ticketData.category || 'قسم غير محدد'}</div>
-                        <div>📅 ${formatDate(ticketData.openedAt)}</div>
-                        ${ticketData.closedAt ? `<div>🔒 ${formatDate(ticketData.closedAt)}</div>` : ''}
+                        <div>👤 العميل: ${users[data.userId] || data.userName || 'غير معروف'}</div>
+                        <div>📁 القسم: ${data.category || 'عام'}</div>
+                        <div>⏰ فتحت في: ${formatDate(data.openedAt)}</div>
                     </div>
                 </div>
-    
+
                 <div class="info-bar">
-                    <div class="info-item"><div class="label">صاحب التذكرة</div><div class="value user">${users[ticketData.userId] || ticketData.userName || 'مستخدم'}</div></div>
-                    <div class="info-item"><div class="label">القسم</div><div class="value">${ticketData.category || 'غير محدد'}</div></div>
-                    <div class="info-item"><div class="label">المسؤول</div><div class="value">${users[ticketData.claimedBy] || ticketData.claimedByName || 'لم يتم الاستلام'}</div></div>
-                    <div class="info-item"><div class="label">الحالة</div><div class="value">${ticketData.closedAt ? 'مغلقة' : 'مفتوحة'}</div></div>
-                    <div class="info-item"><div class="label">إجمالي الرسائل</div><div class="value">${ticketData.messageCount || 0}</div></div>
-                    <div class="info-item"><div class="label">استدعاءات المستخدم</div><div class="value">${ticketData.userMentions || 0}</div></div>
-                    <div class="info-item"><div class="label">استدعاءات الدعم</div><div class="value">${ticketData.adminMentions || 0}</div></div>
-                    <div class="info-item"><div class="label">الأداريين المضافين</div><div class="value">${ticketData.addedAdmins?.length || 0}</div></div>
+                    <div class="info-item"><div class="label">الحالة</div><div class="value">${data.closedAt ? 'مغلقة' : 'مفتوحة'}</div></div>
+                    <div class="info-item"><div class="label">الرسائل</div><div class="value">${data.messages?.length || 0}</div></div>
+                    <div class="info-item"><div class="label">المستلم</div><div class="value">${users[data.claimedBy] || 'لم تستلم'}</div></div>
                 </div>
-    
-                <div class="chat-container">
-                    ${messagesHtml}
-                </div>
-    
-                <div class="action-buttons">
-                    <button class="btn btn-primary" onclick="window.print()">🖨️ طباعة</button>
-                    <button class="btn btn-success" onclick="downloadTranscript()">📥 تحميل</button>
-                </div>
-    
-                <div class="footer"><p>نظام تذاكر عائلة العمدة - ${formatDate(Math.floor(Date.now() / 1000))}</p></div>
-            `;
-    
-            container.innerHTML = fullHtml;
-        }
-    
-        function downloadTranscript() {
-            const content = document.getElementById('transcript-container').innerHTML;
-            const styles = document.querySelector('style').innerHTML;
-            const html = `<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><title>نسخة التذكرة</title><style>${styles}</style></head><body>${content}</body></html>`;
-            const blob = new Blob([html], { type: 'text/html' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `ticket-${new Date().getTime()}.html`;
-            a.click();
-            URL.revokeObjectURL(url);
-        }
-    
-        window.onload = async function() {
-            const container = document.getElementById('transcript-container');
-            const urlParam = getUrlParameter('url');
-            const dataParam = getUrlParameter('data');
-            
-            try {
-                if (urlParam) {
-                    const response = await fetch(urlParam);
-                    if (response.ok) {
-                        const ticketData = await response.json();
-                        renderTranscript(ticketData);
-                        return;
+
+                <div class="chat-container">`;
+
+            if (data.messages) {
+                data.messages.forEach(msg => {
+                    const authorName = users[msg.authorId] || msg.author || "مستخدم غير معروف";
+                    const isBot = msg.bot || false;
+
+                    html += `
+                        <div class="message">
+                            <img src="${msg.avatar || 'https://cdn.discordapp.com/embed/avatars/0.png'}" class="avatar">
+                            <div class="message-content">
+                                <div class="message-header">
+                                    <span class="author">${authorName}</span>
+                                    ${isBot ? '<span class="author bot-tag">بوت</span>' : ''}
+                                    <span class="timestamp">${formatDate(msg.timestamp)}</span>
+                                </div>
+                                <div class="message-text">${parseContent(msg.content, users, roles)}</div>`;
+
+                    // عرض المرفقات (صور)
+                    if (msg.attachments) {
+                        msg.attachments.forEach(att => {
+                            if (att.url.match(/\.(jpg|jpeg|png|gif|webp)$/i)) {
+                                html += `<img src="${att.url}" style="max-width: 100%; border-radius: 8px; margin-top: 10px; max-height: 400px;">`;
+                            } else {
+                                html += `<div style="margin-top:10px;"><a href="${att.url}" target="_blank" style="color:#5865f2;">📎 ملف مرفق: ${att.name}</a></div>`;
+                            }
+                        });
                     }
+
+                    // عرض الـ Embeds
+                    if (msg.embeds) {
+                        msg.embeds.forEach(embed => {
+                            html += `
+                                <div class="embed" style="border-left-color: ${embed.color || '#1e1f22'}">
+                                    ${embed.title ? `<div style="font-weight:bold; margin-bottom:5px;">${embed.title}</div>` : ''}
+                                    ${embed.description ? `<div style="font-size:14px;">${parseContent(embed.description, users, roles)}</div>` : ''}
+                                </div>`;
+                        });
+                    }
+
+                    html += `</div></div>`;
+                });
+            }
+
+            html += `</div>
+                <div class="action-buttons">
+                    <button class="btn btn-print" onclick="window.print()">🖨️ طباعة التذكرة</button>
+                    <button class="btn btn-save" onclick="location.reload()">🔄 تحديث البيانات</button>
+                </div>
+                <div style="text-align:center; padding: 20px; color:#72767d; font-size:12px;">نظام تذاكر عائلة العمدة © 2026</div>`;
+
+            container.innerHTML = html;
+        }
+
+        window.onload = async function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const dataUrl = urlParams.get('url');
+            const rawData = urlParams.get('data');
+
+            try {
+                let ticketData;
+                if (dataUrl) {
+                    const res = await fetch(dataUrl);
+                    ticketData = await res.json();
+                } else if (rawData) {
+                    ticketData = JSON.parse(decodeURIComponent(rawData));
                 }
-                
-                if (dataParam) {
-                    const ticketData = JSON.parse(decodeURIComponent(dataParam));
+
+                if (ticketData) {
                     renderTranscript(ticketData);
-                    return;
+                } else {
+                    document.getElementById('transcript-container').innerHTML = "❌ لم يتم العثور على بيانات للتذكرة.";
                 }
-                
-                container.innerHTML = `<div class="system-message" style="padding:50px;">❌ لا توجد بيانات للتذكرة</div>`;
-            } catch (error) {
-                container.innerHTML = `<div class="system-message" style="padding:50px;color:#f44336;">❌ خطأ: ${error.message}</div>`;
+            } catch (e) {
+                document.getElementById('transcript-container').innerHTML = "❌ حدث خطأ أثناء تحميل البيانات: " + e.message;
             }
         };
     </script>
