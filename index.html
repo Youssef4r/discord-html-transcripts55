@@ -27,7 +27,6 @@
             overflow: hidden;
         }
 
-        /* Header */
         .header {
             background: #202225;
             padding: 20px 30px;
@@ -64,7 +63,6 @@
             border: 1px solid #40444b;
         }
 
-        /* Info Bar */
         .info-bar {
             background: #2f3136;
             padding: 20px 30px;
@@ -97,14 +95,9 @@
             color: #5865f2;
         }
 
-        /* Chat Messages */
         .chat-container {
             padding: 20px 30px;
             background: #36393f;
-        }
-
-        .message-group {
-            margin-bottom: 20px;
         }
 
         .message {
@@ -123,6 +116,7 @@
             border-radius: 50%;
             margin-left: 15px;
             flex-shrink: 0;
+            object-fit: cover;
         }
 
         .message-content {
@@ -134,6 +128,7 @@
             align-items: center;
             gap: 10px;
             margin-bottom: 5px;
+            flex-wrap: wrap;
         }
 
         .author {
@@ -163,7 +158,24 @@
             word-wrap: break-word;
         }
 
-        /* Embeds */
+        .user-mention {
+            background: #5865f2;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 500;
+            display: inline-block;
+        }
+        
+        .role-mention {
+            background: #5865f2;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 500;
+            display: inline-block;
+        }
+
         .embed {
             margin-top: 10px;
             background: #2f3136;
@@ -207,29 +219,6 @@
             margin-top: 10px;
         }
 
-        .embed-thumbnail {
-            max-width: 80px;
-            border-radius: 4px;
-            margin-right: 15px;
-            float: right;
-        }
-
-        .embed-footer {
-            color: #72767d;
-            font-size: 12px;
-            margin-top: 8px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .embed-footer-icon {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-        }
-
-        /* System Messages */
         .system-message {
             background: #2f3136;
             color: #b9bbbe;
@@ -245,22 +234,12 @@
             color: #fff;
         }
 
-        /* Attachments */
-        .attachment {
-            margin-top: 8px;
-        }
-
         .attachment-link {
             color: #5865f2;
             text-decoration: none;
             font-size: 14px;
         }
 
-        .attachment-link:hover {
-            text-decoration: underline;
-        }
-
-        /* Buttons */
         .action-buttons {
             display: flex;
             gap: 10px;
@@ -268,6 +247,7 @@
             background: #2f3136;
             border-top: 1px solid #40444b;
             justify-content: center;
+            flex-wrap: wrap;
         }
 
         .btn {
@@ -281,6 +261,7 @@
             align-items: center;
             gap: 8px;
             transition: all 0.2s ease;
+            text-decoration: none;
         }
 
         .btn-primary {
@@ -301,16 +282,6 @@
             background: #46c572;
         }
 
-        .btn-secondary {
-            background: #4f545c;
-            color: white;
-        }
-
-        .btn-secondary:hover {
-            background: #3e434a;
-        }
-
-        /* Footer */
         .footer {
             background: #202225;
             padding: 15px 30px;
@@ -319,300 +290,285 @@
             text-align: center;
             border-top: 1px solid #40444b;
         }
+        
+        .loading {
+            text-align: center;
+            padding: 50px;
+            color: #fff;
+        }
+        
+        .loading-spinner {
+            border: 4px solid #40444b;
+            border-top: 4px solid #5865f2;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
     <div class="container" id="transcript-container">
-        <!-- المحتوى هيتعبى هنا بالجافاسكريبت -->
+        <div class="loading" id="loading">
+            <div class="loading-spinner"></div>
+            <p>⏳ جاري تحميل بيانات التذكرة...</p>
+        </div>
     </div>
 
     <script>
-        // دالة لجلب محتوى URL
         function getUrlParameter(name) {
             name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
             const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
             const results = regex.exec(window.location.search);
             return results === null ? null : decodeURIComponent(results[1].replace(/\+/g, ' '));
         }
-
-        // دالة لتنسيق التاريخ
+    
         function formatDate(timestamp) {
+            if (!timestamp) return 'غير محدد';
             const date = new Date(timestamp * 1000);
-            return date.toLocaleString('ar-SA', {
+            return date.toLocaleString('en-US', {
+                weekday: 'long',
                 year: 'numeric',
                 month: 'long',
                 day: 'numeric',
-                hour: '2-digit',
+                hour: 'numeric',
                 minute: '2-digit',
-                second: '2-digit'
+                hour12: true
             });
         }
-
-        // دالة لحساب المدة
+    
         function getDuration(seconds) {
-            const hours = Math.floor(seconds / 3600);
-            const minutes = Math.floor((seconds % 3600) / 60);
+            if (!seconds) return 'غير محدد';
+            const minutes = Math.floor(seconds / 60);
             const secs = seconds % 60;
-            
-            if (hours > 0) return `${hours} ساعة ${minutes} دقيقة ${secs} ثانية`;
             if (minutes > 0) return `${minutes} دقيقة ${secs} ثانية`;
             return `${secs} ثانية`;
         }
-
-        // تحميل البيانات
-        window.onload = function() {
+    
+        function renderTranscript(ticketData) {
             const container = document.getElementById('transcript-container');
-            const dataParam = getUrlParameter('data');
+            const loading = document.getElementById('loading');
+            if (loading) loading.style.display = 'none';
             
-            if (!dataParam) {
-                container.innerHTML = `
-                    <div class="system-message" style="padding: 50px; text-align: center;">
-                        ❌ لا توجد بيانات للتذكرة
-                    </div>
-                `;
+            if (!ticketData) {
+                container.innerHTML = '<div style="text-align:center;padding:50px;color:#f44336;">❌ بيانات غير صالحة</div>';
                 return;
             }
-
-            try {
-                const ticketData = JSON.parse(decodeURIComponent(dataParam));
+            
+            const users = {};
+            const roles = {};
+            
+            // إضافة المستخدمين الأساسيين
+            if (ticketData.userId) users[ticketData.userId] = ticketData.userName || 'مستخدم';
+            if (ticketData.claimedBy) users[ticketData.claimedBy] = ticketData.claimedByName || 'مسؤول';
+            if (ticketData.closedBy) users[ticketData.closedBy] = ticketData.closedByName || 'مسؤول';
+            
+            // إضافة الرتب من البيانات
+            if (ticketData.roles) {
+                Object.assign(roles, ticketData.roles);
+            }
+            
+            // إضافة المستخدمين الإضافيين
+            if (ticketData.users) {
+                Object.assign(users, ticketData.users);
+            }
+            
+            // جمع المستخدمين والرتب من الرسائل
+            if (ticketData.messages) {
+                ticketData.messages.forEach(msg => {
+                    if (msg.authorId && msg.author) users[msg.authorId] = msg.author;
+                    
+                    if (msg.content) {
+                        // منشن المستخدمين
+                        const userMatches = msg.content.match(/<@!?(\d+)>/g);
+                        if (userMatches) {
+                            userMatches.forEach(m => {
+                                const id = m.replace(/<@!?|>/g, '');
+                                if (!users[id]) users[id] = 'مستخدم';
+                            });
+                        }
+                        
+                        // منشن الرتب
+                        const roleMatches = msg.content.match(/<@&(\d+)>/g);
+                        if (roleMatches) {
+                            roleMatches.forEach(m => {
+                                const id = m.replace(/<@&|>/g, '');
+                                if (!roles[id]) roles[id] = 'رتبة';
+                            });
+                        }
+                    }
+                });
+            }
+            
+            let messagesHtml = '';
+            
+            // رسالة فتح التذكرة
+            const openerName = users[ticketData.userId] || ticketData.userName || 'مستخدم';
+            messagesHtml += `<div class="system-message"><strong>📌 تم فتح التذكرة</strong> بواسطة <strong>${openerName}</strong> في ${formatDate(ticketData.openedAt)}</div>`;
+            
+            // الأسئلة
+            if (ticketData.answers) {
+                const answers = ticketData.answers;
+                const questions = ticketData.questions || {};
                 
-                // بناء HTML التذكرة
-                let messagesHtml = '';
+                let answersText = '';
+                if (answers.answer1) answersText += `<strong>❓ ${questions.required1 || 'السؤال الأول'}:</strong> ${answers.answer1}<br>`;
+                if (answers.answer2) answersText += `<strong>❓ ${questions.required2 || 'السؤال الثاني'}:</strong> ${answers.answer2}<br>`;
+                if (answers.answer3 && answers.answer3 !== 'لم يتم الإجابة') answersText += `<strong>❓ ${questions.optional1 || 'سؤال اختياري'}:</strong> ${answers.answer3}<br>`;
                 
-                // رسالة فتح التذكرة
-                messagesHtml += `
-                    <div class="system-message">
-                        <strong>📌 تم فتح التذكرة</strong> بواسطة <strong>${ticketData.userName}</strong> في ${formatDate(ticketData.openedAt)}
-                    </div>
-                `;
-                
-                // إجابات الأسئلة (كأول رسالة)
-                if (ticketData.answers) {
+                if (answersText) {
                     messagesHtml += `
                         <div class="message">
-                            <img class="avatar" src="https://cdn.discordapp.com/embed/avatars/0.png" alt="User">
+                            <img class="avatar" src="${ticketData.userAvatar || 'https://cdn.discordapp.com/embed/avatars/0.png'}" onerror="this.src='https://cdn.discordapp.com/embed/avatars/0.png'">
                             <div class="message-content">
                                 <div class="message-header">
-                                    <span class="author">${ticketData.userName}</span>
+                                    <span class="author">${openerName}</span>
                                     <span class="timestamp">${formatDate(ticketData.openedAt)}</span>
                                 </div>
-                                <div class="message-text">
-                                    <strong>📝 إجابات الأسئلة:</strong>
-                                    <br>❓ ${ticketData.questions?.required1 || 'السؤال 1'}: ${ticketData.answers.answer1 || 'لا يوجد'}
-                                    <br>❓ ${ticketData.questions?.required2 || 'السؤال 2'}: ${ticketData.answers.answer2 || 'لا يوجد'}
-                                    ${ticketData.answers.answer3 && ticketData.answers.answer3 !== 'لم يتم الإجابة' ? 
-                                        `<br>❓ ${ticketData.questions?.optional1 || 'سؤال اختياري'}: ${ticketData.answers.answer3}` : ''}
-                                    ${ticketData.answers.answer4 && ticketData.answers.answer4 !== 'لم يتم الإجابة' ? 
-                                        `<br>❓ ${ticketData.questions?.optional2 || 'سؤال اختياري'}: ${ticketData.answers.answer4}` : ''}
-                                    ${ticketData.answers.answer5 && ticketData.answers.answer5 !== 'لم يتم الإجابة' ? 
-                                        `<br>❓ ${ticketData.questions?.optional3 || 'سؤال اختياري'}: ${ticketData.answers.answer5}` : ''}
-                                </div>
+                                <div class="message-text"><strong>📝 إجابات الأسئلة:</strong><br>${answersText}</div>
                             </div>
                         </div>
                     `;
                 }
-
-                // رسائل المحادثة
-                if (ticketData.messages && ticketData.messages.length > 0) {
-                    ticketData.messages.forEach(msg => {
-                        const isBot = msg.author?.includes('bot') || msg.authorId === ticketData.botId;
-                        const isSupport = ticketData.addedAdmins?.includes(msg.authorId) || msg.authorId === ticketData.claimedBy;
-                        
-                        let authorClass = '';
-                        if (isBot) authorClass = 'bot';
-                        else if (isSupport) authorClass = 'support';
-                        
-                        messagesHtml += `
-                            <div class="message">
-                                <img class="avatar" src="${msg.avatar || 'https://cdn.discordapp.com/embed/avatars/0.png'}" alt="Avatar">
-                                <div class="message-content">
-                                    <div class="message-header">
-                                        <span class="author ${authorClass}">${msg.author} ${isBot ? '🤖' : ''}</span>
-                                        <span class="timestamp">${formatDate(msg.timestamp)}</span>
-                                    </div>
-                                    <div class="message-text">${msg.content || ''}</div>
-                        `;
-                        
-                        // إضافة الامبيدات
-                        if (msg.embeds && msg.embeds.length > 0) {
-                            msg.embeds.forEach(embed => {
-                                messagesHtml += `
-                                    <div class="embed" style="border-left-color: ${embed.color || '#5865f2'}">
-                                        ${embed.title ? `<div class="embed-title">${embed.title}</div>` : ''}
-                                        ${embed.description ? `<div class="embed-description">${embed.description}</div>` : ''}
-                                `;
-                                
-                                if (embed.fields && embed.fields.length > 0) {
-                                    embed.fields.forEach(field => {
-                                        messagesHtml += `
-                                            <div class="embed-field">
-                                                <div class="embed-field-name">${field.name}</div>
-                                                <div class="embed-field-value">${field.value}</div>
-                                            </div>
-                                        `;
+            }
+    
+            // الرسائل
+            if (ticketData.messages && ticketData.messages.length > 0) {
+                ticketData.messages.forEach(msg => {
+                    const isBot = msg.authorId === ticketData.botId;
+                    const isSupport = ticketData.addedAdmins?.includes(msg.authorId) || msg.authorId === ticketData.claimedBy;
+                    const authorClass = isBot ? 'bot' : (isSupport ? 'support' : '');
+                    const authorName = users[msg.authorId] || msg.author || 'مستخدم';
+                    
+                    // معالجة المحتوى
+                    let displayContent = msg.content || '';
+                    
+                    // تحويل منشن المستخدمين
+                    displayContent = displayContent.replace(/<@!?(\d+)>/g, (match, id) => {
+                        const name = users[id];
+                        return name ? `<span class="user-mention">@${name}</span>` : match;
+                    });
+                    
+                    // تحويل منشن الرتب
+                    displayContent = displayContent.replace(/<@&(\d+)>/g, (match, id) => {
+                        const roleName = roles[id];
+                        return roleName ? `<span class="role-mention">@${roleName}</span>` : match;
+                    });
+                    
+                    messagesHtml += `
+                        <div class="message">
+                            <img class="avatar" src="${msg.avatar || 'https://cdn.discordapp.com/embed/avatars/0.png'}" onerror="this.src='https://cdn.discordapp.com/embed/avatars/0.png'">
+                            <div class="message-content">
+                                <div class="message-header">
+                                    <span class="author ${authorClass}">${authorName} ${isBot ? '🤖' : ''}</span>
+                                    <span class="timestamp">${formatDate(msg.timestamp)}</span>
+                                </div>
+                                <div class="message-text">${displayContent}</div>
+                    `;
+                    
+                    // الامبيدات
+                    if (msg.embeds && msg.embeds.length > 0) {
+                        msg.embeds.forEach(embed => {
+                            messagesHtml += `<div class="embed" style="border-left-color: ${embed.color || '#5865f2'}">`;
+                            if (embed.title) messagesHtml += `<div class="embed-title">${embed.title}</div>`;
+                            if (embed.description) messagesHtml += `<div class="embed-description">${embed.description}</div>`;
+                            
+                            if (embed.fields) {
+                                embed.fields.forEach(field => {
+                                    let fieldValue = field.value || '';
+                                    fieldValue = fieldValue.replace(/<@!?(\d+)>/g, (m, id) => {
+                                        const name = users[id];
+                                        return name ? `@${name}` : m;
+                                    }).replace(/<@&(\d+)>/g, (m, id) => {
+                                        const roleName = roles[id];
+                                        return roleName ? `@${roleName}` : m;
                                     });
-                                }
-                                
-                                if (embed.image) {
-                                    messagesHtml += `<img class="embed-image" src="${embed.image}" alt="Embed Image">`;
-                                }
-                                
-                                if (embed.footer) {
+                                    
                                     messagesHtml += `
-                                        <div class="embed-footer">
-                                            ${embed.footer.icon ? `<img class="embed-footer-icon" src="${embed.footer.icon}">` : ''}
-                                            ${embed.footer.text}
+                                        <div class="embed-field">
+                                            <div class="embed-field-name">${field.name}</div>
+                                            <div class="embed-field-value">${fieldValue}</div>
                                         </div>
                                     `;
-                                }
-                                
-                                messagesHtml += `</div>`;
-                            });
-                        }
-                        
-                        // إضافة المرفقات
-                        if (msg.attachments && msg.attachments.length > 0) {
-                            msg.attachments.forEach(att => {
-                                messagesHtml += `
-                                    <div class="attachment">
-                                        <a class="attachment-link" href="${att.url}" target="_blank">📎 ${att.name}</a>
-                                    </div>
-                                `;
-                            });
-                        }
-                        
-                        messagesHtml += `
-                                </div>
-                            </div>
-                        `;
-                    });
-                }
-
-                // رسالة استلام التذكرة
-                if (ticketData.claimedByName) {
-                    messagesHtml += `
-                        <div class="system-message">
-                            <strong>✅ تم استلام التذكرة</strong> بواسطة <strong>${ticketData.claimedByName}</strong> في ${formatDate(ticketData.claimedAt)}
-                        </div>
-                    `;
-                }
-
-                // رسالة إغلاق التذكرة
-                if (ticketData.closedAt) {
-                    messagesHtml += `
-                        <div class="system-message">
-                            <strong>🔒 تم إغلاق التذكرة</strong> بواسطة <strong>${ticketData.closedByName || 'غير معروف'}</strong>
-                            <br>📝 السبب: ${ticketData.closeReason || 'غير محدد'}
-                            <br>⏱️ مدة التذكرة: ${getDuration(ticketData.duration || 0)}
-                        </div>
-                    `;
-                }
-
-                // الإحصائيات
-                const statsHtml = `
-                    <div class="info-bar">
-                        <div class="info-item">
-                            <div class="label">إجمالي الرسائل</div>
-                            <div class="value">${ticketData.messageCount || 0}</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="label">استدعاءات المستخدم</div>
-                            <div class="value">${ticketData.userMentions || 0}</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="label">استدعاءات الدعم</div>
-                            <div class="value">${ticketData.adminMentions || 0}</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="label">الأداريين المضافين</div>
-                            <div class="value">${ticketData.addedAdmins?.length || 0}</div>
-                        </div>
-                    </div>
-                `;
-
-                // تجميع كل حاجة
-                const fullHtml = `
-                    <div class="header">
-                        <h1>📋 نسخة التذكرة <span>${ticketData.fullId || ticketData.id || 'غير معروف'}</span></h1>
-                        <div class="ticket-info">
-                            <div>👤 ${ticketData.userName}</div>
-                            <div>📂 ${ticketData.category}</div>
-                            <div>📅 ${formatDate(ticketData.openedAt)}</div>
-                            ${ticketData.closedAt ? `<div>🔒 ${formatDate(ticketData.closedAt)}</div>` : ''}
-                        </div>
-                    </div>
-
-                    <div class="info-bar">
-                        <div class="info-item">
-                            <div class="label">صاحب التذكرة</div>
-                            <div class="value user">${ticketData.userName}</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="label">القسم</div>
-                            <div class="value">${ticketData.category}</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="label">المسؤول</div>
-                            <div class="value">${ticketData.claimedByName || 'لم يتم الاستلام'}</div>
-                        </div>
-                        <div class="info-item">
-                            <div class="label">الحالة</div>
-                            <div class="value">${ticketData.closedAt ? 'مغلقة' : 'مفتوحة'}</div>
-                        </div>
-                    </div>
-
-                    <div class="chat-container">
-                        ${messagesHtml}
-                    </div>
-
-                    ${statsHtml}
-
-                    <div class="action-buttons">
-                        <button class="btn btn-primary" onclick="window.print()">
-                            🖨️ طباعة
-                        </button>
-                        <button class="btn btn-success" onclick="downloadTranscript()">
-                            📥 تحميل
-                        </button>
-                        <button class="btn btn-secondary" onclick="window.close()">
-                            🔒 إغلاق
-                        </button>
-                    </div>
-
-                    <div class="footer">
-                        <p>نظام تذاكر عائلة العمدة - تم إنشاء هذه النسخة في ${formatDate(Math.floor(Date.now() / 1000))}</p>
-                    </div>
-                `;
-
-                container.innerHTML = fullHtml;
-
-            } catch (error) {
-                container.innerHTML = `
-                    <div class="system-message" style="padding: 50px; text-align: center; color: #f44336;">
-                        ❌ خطأ في تحميل بيانات التذكرة: ${error.message}
-                    </div>
-                `;
+                                });
+                            }
+                            
+                            if (embed.image) messagesHtml += `<img class="embed-image" src="${embed.image}">`;
+                            messagesHtml += `</div>`;
+                        });
+                    }
+                    
+                    // المرفقات
+                    if (msg.attachments && msg.attachments.length > 0) {
+                        msg.attachments.forEach(att => {
+                            messagesHtml += `<div class="attachment"><a class="attachment-link" href="${att.url}" target="_blank">📎 ${att.name}</a></div>`;
+                        });
+                    }
+                    
+                    messagesHtml += `</div></div>`;
+                });
             }
-        };
-
-        // دالة تحميل الملف
+    
+            // رسالة الاستلام
+            if (ticketData.claimedByName && ticketData.claimedByName !== 'لم يتم الاستلام' && ticketData.claimedAt) {
+                const claimerName = users[ticketData.claimedBy] || ticketData.claimedByName;
+                messagesHtml += `<div class="system-message"><strong>✅ تم استلام التذكرة</strong> بواسطة <strong>${claimerName}</strong> في ${formatDate(ticketData.claimedAt)}</div>`;
+            }
+    
+            // رسالة الإغلاق
+            if (ticketData.closedAt) {
+                const closerName = users[ticketData.closedBy] || ticketData.closedByName || 'غير معروف';
+                messagesHtml += `<div class="system-message"><strong>🔒 تم إغلاق التذكرة</strong> بواسطة <strong>${closerName}</strong><br>📝 السبب: ${ticketData.closeReason || 'غير محدد'}<br>⏱️ المدة: ${getDuration(ticketData.duration)}</div>`;
+            }
+    
+            // العرض النهائي
+            const fullHtml = `
+                <div class="header">
+                    <h1>📋 نسخة التذكرة <span>${ticketData.fullId || ticketData.id || 'غير معروف'}</span></h1>
+                    <div class="ticket-info">
+                        <div>👤 ${users[ticketData.userId] || ticketData.userName || 'مستخدم'}</div>
+                        <div>📂 ${ticketData.category || 'قسم غير محدد'}</div>
+                        <div>📅 ${formatDate(ticketData.openedAt)}</div>
+                        ${ticketData.closedAt ? `<div>🔒 ${formatDate(ticketData.closedAt)}</div>` : ''}
+                    </div>
+                </div>
+    
+                <div class="info-bar">
+                    <div class="info-item"><div class="label">صاحب التذكرة</div><div class="value user">${users[ticketData.userId] || ticketData.userName || 'مستخدم'}</div></div>
+                    <div class="info-item"><div class="label">القسم</div><div class="value">${ticketData.category || 'غير محدد'}</div></div>
+                    <div class="info-item"><div class="label">المسؤول</div><div class="value">${users[ticketData.claimedBy] || ticketData.claimedByName || 'لم يتم الاستلام'}</div></div>
+                    <div class="info-item"><div class="label">الحالة</div><div class="value">${ticketData.closedAt ? 'مغلقة' : 'مفتوحة'}</div></div>
+                    <div class="info-item"><div class="label">إجمالي الرسائل</div><div class="value">${ticketData.messageCount || 0}</div></div>
+                    <div class="info-item"><div class="label">استدعاءات المستخدم</div><div class="value">${ticketData.userMentions || 0}</div></div>
+                    <div class="info-item"><div class="label">استدعاءات الدعم</div><div class="value">${ticketData.adminMentions || 0}</div></div>
+                    <div class="info-item"><div class="label">الأداريين المضافين</div><div class="value">${ticketData.addedAdmins?.length || 0}</div></div>
+                </div>
+    
+                <div class="chat-container">
+                    ${messagesHtml}
+                </div>
+    
+                <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="window.print()">🖨️ طباعة</button>
+                    <button class="btn btn-success" onclick="downloadTranscript()">📥 تحميل</button>
+                </div>
+    
+                <div class="footer"><p>نظام تذاكر عائلة العمدة - ${formatDate(Math.floor(Date.now() / 1000))}</p></div>
+            `;
+    
+            container.innerHTML = fullHtml;
+        }
+    
         function downloadTranscript() {
             const content = document.getElementById('transcript-container').innerHTML;
-            const style = document.querySelector('style').innerHTML;
-            
-            const html = `
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <meta charset="UTF-8">
-                    <style>${style}</style>
-                </head>
-                <body>
-                    ${content}
-                </body>
-                </html>
-            `;
-            
+            const styles = document.querySelector('style').innerHTML;
+            const html = `<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><title>نسخة التذكرة</title><style>${styles}</style></head><body>${content}</body></html>`;
             const blob = new Blob([html], { type: 'text/html' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -621,6 +577,33 @@
             a.click();
             URL.revokeObjectURL(url);
         }
+    
+        window.onload = async function() {
+            const container = document.getElementById('transcript-container');
+            const urlParam = getUrlParameter('url');
+            const dataParam = getUrlParameter('data');
+            
+            try {
+                if (urlParam) {
+                    const response = await fetch(urlParam);
+                    if (response.ok) {
+                        const ticketData = await response.json();
+                        renderTranscript(ticketData);
+                        return;
+                    }
+                }
+                
+                if (dataParam) {
+                    const ticketData = JSON.parse(decodeURIComponent(dataParam));
+                    renderTranscript(ticketData);
+                    return;
+                }
+                
+                container.innerHTML = `<div class="system-message" style="padding:50px;">❌ لا توجد بيانات للتذكرة</div>`;
+            } catch (error) {
+                container.innerHTML = `<div class="system-message" style="padding:50px;color:#f44336;">❌ خطأ: ${error.message}</div>`;
+            }
+        };
     </script>
 </body>
-</html>
+</html> 
