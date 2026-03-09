@@ -637,51 +637,107 @@
                     `;
                     
                     if (msg.embeds && msg.embeds.length > 0) {
-                        msg.embeds.forEach(embed => {
-                            messagesHtml += `<div class="embed" style="border-right-color: ${embed.color || '#5865f2'}">`;
-                            if (embed.title) messagesHtml += `<div class="embed-title">${embed.title}</div>`;
-                            if (embed.description) messagesHtml += `<div class="embed-description">${embed.description}</div>`;
-                            
-                            if (embed.fields) {
-                                embed.fields.forEach(field => {
-                                    let fieldValue = field.value || '';
-                                    fieldValue = fieldValue.replace(/<@!?(\d+)>/g, (m, id) => {
-                                        const name = users[id];
-                                        return name ? `@${name}` : m;
-                                    }).replace(/<@&(\d+)>/g, (m, id) => {
-                                        const roleName = roles[id];
-                                        return roleName ? `@${roleName}` : m;
-                                    });
-                                    
-                                    messagesHtml += `
-                                        <div class="embed-field">
-                                            <div class="embed-field-name">${field.name}</div>
-                                            <div class="embed-field-value">${fieldValue}</div>
-                                        </div>
-                                    `;
-                                });
-                            }
-                            
-                            if (embed.image) messagesHtml += `<img class="embed-image" src="${embed.image}" loading="lazy">`;
-                            messagesHtml += `</div>`;
-                        });
+    msg.embeds.forEach(embed => {
+        messagesHtml += `<div class="embed" style="border-right-color: ${embed.color || '#5865f2'}">`;
+        
+        // العنوان
+        if (embed.title) messagesHtml += `<div class="embed-title">${embed.title}</div>`;
+        
+        // ⭐⭐⭐ معالجة الوصف - تقسيمه لأسطر وتحويل التواريخ
+        if (embed.description) {
+            let description = embed.description;
+            
+            // تحويل <t:timestamp:F> لتاريخ مقروء
+            description = description.replace(/<t:(\d+):([FfRrtTdD])>/g, (match, timestamp, format) => {
+                const date = new Date(timestamp * 1000);
+                return formatDate(timestamp);
+            });
+            
+            // تقسيم النص لأسطر
+            const lines = description.split('\n');
+            
+            // بداية الـ embed-description
+            messagesHtml += `<div class="embed-description">`;
+            
+            // عرض كل سطر لوحده مع تنسيق مختلف
+            lines.forEach(line => {
+                if (line.trim() === '') {
+                    messagesHtml += `<div style="height: 8px;"></div>`; // فراغ بين الفقرات
+                } else if (line.startsWith('**') && line.endsWith('**')) {
+                    // عنوان عريض
+                    messagesHtml += `<div style="color: #fff; font-weight: 700; margin: 10px 0 5px 0;">${line.replace(/\*\*/g, '')}</div>`;
+                } else if (line.includes('👤') || line.includes('👨‍💼') || line.includes('📂') || line.includes('📅') || line.includes('📊')) {
+                    // أسطر المعلومات (اللي فيها إيموجي)
+                    const parts = line.split(':');
+                    if (parts.length > 1) {
+                        const label = parts[0].trim();
+                        const value = parts.slice(1).join(':').trim();
+                        messagesHtml += `
+                            <div style="display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px; padding: 5px 0;">
+                                <span style="color: #b9bbbe; min-width: 130px;">${label}:</span>
+                                <span style="color: #fff;">${value}</span>
+                            </div>
+                        `;
+                    } else {
+                        messagesHtml += `<div style="color: #dcddde; margin-bottom: 5px;">${line}</div>`;
                     }
-                    
-                    if (msg.attachments && msg.attachments.length > 0) {
-                        msg.attachments.forEach(att => {
-                            messagesHtml += `<div><a class="attachment-link" href="${att.url}" target="_blank">📎 ${att.name}</a></div>`;
-                        });
-                    }
-                    
-                    messagesHtml += `</div></div>`;
+                } else {
+                    // سطر عادي
+                    messagesHtml += `<div style="color: #dcddde; margin-bottom: 5px;">${line}</div>`;
+                }
+            });
+            
+            messagesHtml += `</div>`; // إغلاق embed-description
+        }
+        
+        // الحقول
+        if (embed.fields) {
+            embed.fields.forEach(field => {
+                let fieldValue = field.value || '';
+                
+                // تحويل المنشنات
+                fieldValue = fieldValue.replace(/<@!?(\d+)>/g, (m, id) => {
+                    const name = users[id];
+                    return name ? `@${name}` : m;
+                }).replace(/<@&(\d+)>/g, (m, id) => {
+                    const roleName = roles[id];
+                    return roleName ? `@${roleName}` : m;
                 });
-            }
-    
-            if (ticketData.claimedByName && ticketData.claimedByName !== 'لم يتم الاستلام' && ticketData.claimedAt) {
-                const claimerName = users[ticketData.claimedBy] || ticketData.claimedByName;
-                messagesHtml += `<div class="system-message"><strong>✅ تم استلام التذكرة</strong> بواسطة <strong>${claimerName}</strong> في ${formatDate(ticketData.claimedAt)}</div>`;
-            }
-    
+                
+                // تحويل التواريخ في الحقول
+                fieldValue = fieldValue.replace(/<t:(\d+):([FfRrtTdD])>/g, (match, timestamp) => {
+                    return formatDate(timestamp);
+                });
+                
+                messagesHtml += `
+                    <div class="embed-field">
+                        <div class="embed-field-name">${field.name}</div>
+                        <div class="embed-field-value">${fieldValue}</div>
+                    </div>
+                `;
+            });
+        }
+        
+        // الصورة
+        if (embed.image) messagesHtml += `<img class="embed-image" src="${embed.image}" loading="lazy">`;
+        
+        // الفوتر
+        if (embed.footer) {
+            messagesHtml += `<div style="color: #72767d; font-size: 12px; margin-top: 10px; padding-top: 8px; border-top: 1px solid #40444b;">${embed.footer.text}</div>`;
+        }
+        
+        messagesHtml += `</div>`; // إغلاق embed
+    });
+}
+
+// المرفقات
+if (msg.attachments && msg.attachments.length > 0) {
+    msg.attachments.forEach(att => {
+        messagesHtml += `<div><a class="attachment-link" href="${att.url}" target="_blank">📎 ${att.name}</a></div>`;
+    });
+}
+
+messagesHtml += `</div></div>`;
             if (ticketData.closedAt) {
                 const closerName = users[ticketData.closedBy] || ticketData.closedByName || 'غير معروف';
                 messagesHtml += `<div class="system-message"><strong>🔒 تم إغلاق التذكرة</strong> بواسطة <strong>${closerName}</strong><br>📝 السبب: ${ticketData.closeReason || 'غير محدد'}<br>⏱️ المدة: ${getDuration(ticketData.duration)}</div>`;
