@@ -332,18 +332,21 @@
         function formatDate(timestamp) {
             if (!timestamp) return 'غير محدد';
             const date = new Date(timestamp * 1000);
-            return date.toLocaleString('ar-SA', {
-                year: 'numeric', month: 'long', day: 'numeric',
-                hour: '2-digit', minute: '2-digit', second: '2-digit'
+            return date.toLocaleString('en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: 'numeric',
+                minute: '2-digit',
+                hour12: true
             });
         }
     
         function getDuration(seconds) {
             if (!seconds) return 'غير محدد';
-            const hours = Math.floor(seconds / 3600);
-            const minutes = Math.floor((seconds % 3600) / 60);
+            const minutes = Math.floor(seconds / 60);
             const secs = seconds % 60;
-            if (hours > 0) return `${hours} ساعة ${minutes} دقيقة ${secs} ثانية`;
             if (minutes > 0) return `${minutes} دقيقة ${secs} ثانية`;
             return `${secs} ثانية`;
         }
@@ -361,22 +364,26 @@
             const users = {};
             const roles = {};
             
-            // ⭐⭐⭐⭐⭐⭐ الأساسيات ⭐⭐⭐⭐⭐⭐
+            // إضافة المستخدمين الأساسيين
             if (ticketData.userId) users[ticketData.userId] = ticketData.userName || 'مستخدم';
             if (ticketData.claimedBy) users[ticketData.claimedBy] = ticketData.claimedByName || 'مسؤول';
             if (ticketData.closedBy) users[ticketData.closedBy] = ticketData.closedByName || 'مسؤول';
             
-            // ⭐⭐⭐⭐⭐⭐ الرتب من البيانات ⭐⭐⭐⭐⭐⭐
+            // إضافة الرتب من البيانات
             if (ticketData.roles) {
                 Object.assign(roles, ticketData.roles);
             }
             
-            // ⭐⭐⭐⭐⭐⭐ المستخدمين من الرسائل ⭐⭐⭐⭐⭐⭐
+            // إضافة المستخدمين الإضافيين
+            if (ticketData.users) {
+                Object.assign(users, ticketData.users);
+            }
+            
+            // جمع المستخدمين والرتب من الرسائل
             if (ticketData.messages) {
                 ticketData.messages.forEach(msg => {
                     if (msg.authorId && msg.author) users[msg.authorId] = msg.author;
                     
-                    // استخراج كل المنشنات من النص
                     if (msg.content) {
                         // منشن المستخدمين
                         const userMatches = msg.content.match(/<@!?(\d+)>/g);
@@ -401,7 +408,7 @@
             
             let messagesHtml = '';
             
-            // رسالة الفتح
+            // رسالة فتح التذكرة
             const openerName = users[ticketData.userId] || ticketData.userName || 'مستخدم';
             messagesHtml += `<div class="system-message"><strong>📌 تم فتح التذكرة</strong> بواسطة <strong>${openerName}</strong> في ${formatDate(ticketData.openedAt)}</div>`;
             
@@ -409,10 +416,11 @@
             if (ticketData.answers) {
                 const answers = ticketData.answers;
                 const questions = ticketData.questions || {};
+                
                 let answersText = '';
-                if (answers.answer1) answersText += `<strong>❓ ${questions.required1 || 'السؤال 1'}:</strong> ${answers.answer1}<br>`;
-                if (answers.answer2) answersText += `<strong>❓ ${questions.required2 || 'السؤال 2'}:</strong> ${answers.answer2}<br>`;
-                if (answers.answer3 && answers.answer3 !== 'لم يتم الإجابة') answersText += `<strong>❓ ${questions.optional1 || 'اختياري'}:</strong> ${answers.answer3}<br>`;
+                if (answers.answer1) answersText += `<strong>❓ ${questions.required1 || 'السؤال الأول'}:</strong> ${answers.answer1}<br>`;
+                if (answers.answer2) answersText += `<strong>❓ ${questions.required2 || 'السؤال الثاني'}:</strong> ${answers.answer2}<br>`;
+                if (answers.answer3 && answers.answer3 !== 'لم يتم الإجابة') answersText += `<strong>❓ ${questions.optional1 || 'سؤال اختياري'}:</strong> ${answers.answer3}<br>`;
                 
                 if (answersText) {
                     messagesHtml += `
@@ -435,19 +443,19 @@
                 ticketData.messages.forEach(msg => {
                     const isBot = msg.authorId === ticketData.botId;
                     const isSupport = ticketData.addedAdmins?.includes(msg.authorId) || msg.authorId === ticketData.claimedBy;
-                    let authorClass = isBot ? 'bot' : (isSupport ? 'support' : '');
+                    const authorClass = isBot ? 'bot' : (isSupport ? 'support' : '');
                     const authorName = users[msg.authorId] || msg.author || 'مستخدم';
                     
-                    // ⭐⭐⭐⭐⭐⭐ معالجة المنشنات ⭐⭐⭐⭐⭐⭐
+                    // معالجة المحتوى
                     let displayContent = msg.content || '';
                     
-                    // المستخدمين
+                    // تحويل منشن المستخدمين
                     displayContent = displayContent.replace(/<@!?(\d+)>/g, (match, id) => {
                         const name = users[id];
                         return name ? `<span class="user-mention">@${name}</span>` : match;
                     });
                     
-                    // الرتب
+                    // تحويل منشن الرتب
                     displayContent = displayContent.replace(/<@&(\d+)>/g, (match, id) => {
                         const roleName = roles[id];
                         return roleName ? `<span class="role-mention">@${roleName}</span>` : match;
@@ -467,9 +475,9 @@
                     // الامبيدات
                     if (msg.embeds && msg.embeds.length > 0) {
                         msg.embeds.forEach(embed => {
-                            let embedHtml = `<div class="embed" style="border-left-color: ${embed.color || '#5865f2'}">`;
-                            if (embed.title) embedHtml += `<div class="embed-title">${embed.title}</div>`;
-                            if (embed.description) embedHtml += `<div class="embed-description">${embed.description}</div>`;
+                            messagesHtml += `<div class="embed" style="border-left-color: ${embed.color || '#5865f2'}">`;
+                            if (embed.title) messagesHtml += `<div class="embed-title">${embed.title}</div>`;
+                            if (embed.description) messagesHtml += `<div class="embed-description">${embed.description}</div>`;
                             
                             if (embed.fields) {
                                 embed.fields.forEach(field => {
@@ -482,7 +490,7 @@
                                         return roleName ? `@${roleName}` : m;
                                     });
                                     
-                                    embedHtml += `
+                                    messagesHtml += `
                                         <div class="embed-field">
                                             <div class="embed-field-name">${field.name}</div>
                                             <div class="embed-field-value">${fieldValue}</div>
@@ -491,9 +499,8 @@
                                 });
                             }
                             
-                            if (embed.image) embedHtml += `<img class="embed-image" src="${embed.image}">`;
-                            embedHtml += `</div>`;
-                            messagesHtml += embedHtml;
+                            if (embed.image) messagesHtml += `<img class="embed-image" src="${embed.image}">`;
+                            messagesHtml += `</div>`;
                         });
                     }
                     
@@ -509,7 +516,7 @@
             }
     
             // رسالة الاستلام
-            if (ticketData.claimedByName && ticketData.claimedByName !== 'لم يتم الاستلام') {
+            if (ticketData.claimedByName && ticketData.claimedByName !== 'لم يتم الاستلام' && ticketData.claimedAt) {
                 const claimerName = users[ticketData.claimedBy] || ticketData.claimedByName;
                 messagesHtml += `<div class="system-message"><strong>✅ تم استلام التذكرة</strong> بواسطة <strong>${claimerName}</strong> في ${formatDate(ticketData.claimedAt)}</div>`;
             }
@@ -520,7 +527,7 @@
                 messagesHtml += `<div class="system-message"><strong>🔒 تم إغلاق التذكرة</strong> بواسطة <strong>${closerName}</strong><br>📝 السبب: ${ticketData.closeReason || 'غير محدد'}<br>⏱️ المدة: ${getDuration(ticketData.duration)}</div>`;
             }
     
-            // ⭐⭐⭐⭐⭐⭐ العرض النهائي ⭐⭐⭐⭐⭐⭐
+            // العرض النهائي
             const fullHtml = `
                 <div class="header">
                     <h1>📋 نسخة التذكرة <span>${ticketData.fullId || ticketData.id || 'غير معروف'}</span></h1>
@@ -543,7 +550,9 @@
                     <div class="info-item"><div class="label">الأداريين المضافين</div><div class="value">${ticketData.addedAdmins?.length || 0}</div></div>
                 </div>
     
-                <div class="chat-container">${messagesHtml}</div>
+                <div class="chat-container">
+                    ${messagesHtml}
+                </div>
     
                 <div class="action-buttons">
                     <button class="btn btn-primary" onclick="window.print()">🖨️ طباعة</button>
