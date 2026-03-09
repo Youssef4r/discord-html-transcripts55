@@ -418,7 +418,7 @@
             return `${secs} ثانية`;
         }
     
-    // دالة لتحويل mentions في النص - نسخة متكاملة للمستخدمين والرتب
+        // دالة لتحويل mentions في النص - نسخة متكاملة للمستخدمين والرتب
 function formatMessageContent(content, users = {}, roles = {}) {
     if (!content) return '';
     
@@ -477,7 +477,19 @@ function formatMessageContent(content, users = {}, roles = {}) {
                     }
                 });
             }
-            
+            //========== هنا ضيف الكود الجديد ==========
+    // استخدام الرتب من البيانات (اللي جاية من البوت)
+    if (ticketData.roles) {
+        Object.assign(roles, ticketData.roles);
+        console.log(`✅ تم تحميل ${Object.keys(ticketData.roles).length} رتبة من البيانات`);
+    }
+    
+    // استخدام المستخدمين الإضافيين من البيانات
+    if (ticketData.users) {
+        Object.assign(users, ticketData.users);
+        console.log(`✅ تم تحميل ${Object.keys(ticketData.users).length} مستخدم إضافي من البيانات`);
+    }
+    // ====
             return { users, roles, channels };
         }
     
