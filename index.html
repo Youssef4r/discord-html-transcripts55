@@ -3,69 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>📋 نسخة التذكرة - نظام التذاكر</title>
+    <title>📋 نسخة التذكرة - نظام تذاكر عائلة العمدة</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Whitney', 'Helvetica Neue', 'Segoe UI', Arial, sans-serif;
+            font-family: 'Whitney', 'Helvetica Neue', 'Segoe UI', 'Cairo', Arial, sans-serif;
         }
 
         body {
-            background: #36393f;
+            background: #1a1b1e;
             min-height: 100vh;
-            padding: 20px;
+            padding: 30px 20px;
         }
 
         .container {
-            max-width: 900px;
+            max-width: 1000px;
             margin: 0 auto;
             background: #2f3136;
-            border-radius: 8px;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
             overflow: hidden;
+            border: 1px solid #40444b;
         }
 
+        /* الهيدر */
         .header {
-            background: #202225;
-            padding: 20px 30px;
-            border-bottom: 1px solid #40444b;
+            background: linear-gradient(145deg, #202225 0%, #2a2c30 100%);
+            padding: 30px 35px;
+            border-bottom: 3px solid #5865f2;
         }
 
         .header h1 {
             color: #fff;
-            font-size: 24px;
-            font-weight: 600;
-            margin-bottom: 10px;
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            letter-spacing: 0.5px;
         }
 
         .header h1 span {
             background: #5865f2;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 16px;
-            margin-right: 10px;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-size: 18px;
+            font-weight: 600;
+            box-shadow: 0 4px 10px rgba(88, 101, 242, 0.3);
         }
 
         .ticket-info {
             display: flex;
             gap: 20px;
             flex-wrap: wrap;
-            color: #b9bbbe;
-            font-size: 14px;
+            margin-top: 15px;
         }
 
         .ticket-info div {
-            background: #2f3136;
-            padding: 5px 15px;
-            border-radius: 20px;
+            background: rgba(0,0,0,0.3);
+            padding: 10px 20px;
+            border-radius: 30px;
             border: 1px solid #40444b;
+            color: #b9bbbe;
+            font-size: 15px;
+            font-weight: 500;
+            backdrop-filter: blur(5px);
         }
 
+        .ticket-info div strong {
+            color: #fff;
+            margin-left: 5px;
+        }
+
+        /* شريط المعلومات */
         .info-bar {
             background: #2f3136;
-            padding: 20px 30px;
+            padding: 25px 30px;
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 15px;
@@ -74,36 +90,48 @@
 
         .info-item {
             background: #202225;
-            padding: 12px 15px;
-            border-radius: 8px;
+            padding: 15px 20px;
+            border-radius: 12px;
+            transition: transform 0.2s ease;
+            border: 1px solid #40444b;
+        }
+
+        .info-item:hover {
+            transform: translateY(-2px);
+            border-color: #5865f2;
         }
 
         .info-item .label {
             color: #72767d;
-            font-size: 12px;
-            margin-bottom: 5px;
+            font-size: 13px;
+            margin-bottom: 8px;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .info-item .value {
             color: #fff;
-            font-size: 16px;
-            font-weight: 500;
+            font-size: 18px;
+            font-weight: 600;
+            line-height: 1.4;
         }
 
         .info-item .value.user {
             color: #5865f2;
         }
 
+        /* منطقة المحادثة */
         .chat-container {
-            padding: 20px 30px;
+            padding: 25px 30px;
             background: #36393f;
         }
 
+        /* كل رسالة */
         .message {
             display: flex;
-            padding: 10px 0;
+            padding: 15px 0;
             border-bottom: 1px solid #40444b;
+            margin-bottom: 5px;
         }
 
         .message:last-child {
@@ -111,12 +139,13 @@
         }
 
         .avatar {
-            width: 40px;
-            height: 40px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
-            margin-left: 15px;
+            margin-left: 20px;
             flex-shrink: 0;
             object-fit: cover;
+            border: 2px solid #40444b;
         }
 
         .message-content {
@@ -126,15 +155,16 @@
         .message-header {
             display: flex;
             align-items: center;
-            gap: 10px;
-            margin-bottom: 5px;
+            gap: 15px;
+            margin-bottom: 8px;
             flex-wrap: wrap;
         }
 
         .author {
             color: #fff;
-            font-weight: 600;
-            font-size: 16px;
+            font-weight: 700;
+            font-size: 18px;
+            letter-spacing: 0.3px;
         }
 
         .author.bot {
@@ -147,121 +177,203 @@
 
         .timestamp {
             color: #72767d;
-            font-size: 12px;
+            font-size: 13px;
+            background: rgba(0,0,0,0.2);
+            padding: 4px 12px;
+            border-radius: 20px;
         }
 
         .message-text {
             color: #dcddde;
-            font-size: 15px;
-            line-height: 1.5;
+            font-size: 16px;
+            line-height: 1.6;
             white-space: pre-wrap;
             word-wrap: break-word;
+            padding: 5px 0;
         }
 
+        /* ⭐⭐⭐ تنسيق المنشنات الجديد - الأهم */
         .user-mention {
             background: #5865f2;
             color: white;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-weight: 500;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 600;
             display: inline-block;
+            font-size: 0.95em;
+            margin: 2px 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .user-mention:hover {
+            background: #4752c4;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
         }
         
         .role-mention {
-            background: #5865f2;
             color: white;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-weight: 500;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-weight: 600;
             display: inline-block;
+            margin: 2px 4px;
+            font-size: 0.95em;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
         }
 
+        .role-mention:hover {
+            filter: brightness(1.1);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+        }
+
+        /* ألوان الرتب حسب التصنيف */
+        .role-mention[data-category="admin"] { background: #f04747; }
+        .role-mention[data-category="mod"] { background: #43b581; }
+        .role-mention[data-category="support"] { background: #3498db; }
+        .role-mention[data-category="owner"] { background: #faa61a; color: #2f3136; }
+        .role-mention[data-category="vip"] { background: #9b59b6; }
+        .role-mention[data-category="booster"] { background: #ff7b9c; }
+        .role-mention[data-category="member"] { background: #95a5a6; }
+
+        /* الامبيدات */
         .embed {
-            margin-top: 10px;
+            margin-top: 15px;
             background: #2f3136;
-            border-left: 4px solid;
-            border-radius: 4px;
-            padding: 15px;
-            max-width: 520px;
+            border-right: 4px solid;
+            border-radius: 8px;
+            padding: 15px 20px;
+            max-width: 600px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
 
         .embed-title {
             color: #fff;
-            font-weight: 600;
-            margin-bottom: 8px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            font-size: 16px;
         }
 
         .embed-description {
             color: #dcddde;
-            font-size: 14px;
-            margin-bottom: 8px;
+            font-size: 15px;
+            margin-bottom: 10px;
+            line-height: 1.5;
         }
 
         .embed-field {
-            margin-top: 8px;
+            margin-top: 12px;
+            padding: 8px 0;
+            border-bottom: 1px solid #40444b;
+        }
+
+        .embed-field:last-child {
+            border-bottom: none;
         }
 
         .embed-field-name {
             color: #b9bbbe;
             font-size: 14px;
             font-weight: 600;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
         }
 
         .embed-field-value {
             color: #dcddde;
-            font-size: 14px;
+            font-size: 15px;
+            line-height: 1.6;
         }
 
         .embed-image {
             max-width: 100%;
-            border-radius: 4px;
-            margin-top: 10px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border: 2px solid #40444b;
         }
 
+        /* الرسائل النظامية */
         .system-message {
             background: #2f3136;
             color: #b9bbbe;
-            padding: 10px 15px;
-            border-radius: 8px;
+            padding: 15px 25px;
+            border-radius: 12px;
             text-align: center;
-            font-size: 14px;
-            margin: 15px 0;
-            border: 1px dashed #40444b;
+            font-size: 15px;
+            margin: 20px 0;
+            border: 1px dashed #5865f2;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .system-message::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 4px;
+            height: 100%;
+            background: #5865f2;
         }
 
         .system-message strong {
             color: #fff;
+            font-weight: 700;
         }
 
+        /* المرفقات */
         .attachment-link {
             color: #5865f2;
             text-decoration: none;
-            font-size: 14px;
+            font-size: 15px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 15px;
+            background: #202225;
+            border-radius: 8px;
+            margin: 5px 0;
+            transition: all 0.2s ease;
         }
 
+        .attachment-link:hover {
+            background: #2f3136;
+            color: #57f287;
+        }
+
+        /* أزرار التحكم */
         .action-buttons {
             display: flex;
-            gap: 10px;
-            padding: 20px 30px;
+            gap: 15px;
+            padding: 25px 30px;
             background: #2f3136;
-            border-top: 1px solid #40444b;
+            border-top: 2px solid #40444b;
             justify-content: center;
             flex-wrap: wrap;
         }
 
         .btn {
-            padding: 10px 20px;
-            border-radius: 5px;
+            padding: 12px 30px;
+            border-radius: 30px;
             border: none;
-            font-size: 14px;
+            font-size: 16px;
             font-weight: 600;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
             transition: all 0.2s ease;
             text-decoration: none;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
 
         .btn-primary {
@@ -271,6 +383,8 @@
 
         .btn-primary:hover {
             background: #4752c4;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(88, 101, 242, 0.4);
         }
 
         .btn-success {
@@ -280,20 +394,23 @@
 
         .btn-success:hover {
             background: #46c572;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(87, 242, 135, 0.3);
         }
 
         .footer {
             background: #202225;
-            padding: 15px 30px;
+            padding: 20px 30px;
             color: #72767d;
-            font-size: 12px;
+            font-size: 14px;
             text-align: center;
-            border-top: 1px solid #40444b;
+            border-top: 2px solid #40444b;
+            line-height: 1.6;
         }
         
         .loading {
             text-align: center;
-            padding: 50px;
+            padding: 60px;
             color: #fff;
         }
         
@@ -301,8 +418,8 @@
             border: 4px solid #40444b;
             border-top: 4px solid #5865f2;
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
+            width: 50px;
+            height: 50px;
             animation: spin 1s linear infinite;
             margin: 20px auto;
         }
@@ -310,6 +427,11 @@
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
+        }
+
+        /* فصل العناصر */
+        .spacer {
+            height: 10px;
         }
     </style>
 </head>
@@ -332,7 +454,7 @@
         function formatDate(timestamp) {
             if (!timestamp) return 'غير محدد';
             const date = new Date(timestamp * 1000);
-            return date.toLocaleString('en-US', {
+            return date.toLocaleString('ar-EG', {
                 weekday: 'long',
                 year: 'numeric',
                 month: 'long',
@@ -350,6 +472,42 @@
             if (minutes > 0) return `${minutes} دقيقة ${secs} ثانية`;
             return `${secs} ثانية`;
         }
+
+        // ⭐⭐ دالة تحديد فئة الرتبة بناءً على الاسم
+        function getRoleCategory(roleName) {
+            if (!roleName) return 'member';
+            
+            const name = roleName.toLowerCase();
+            if (name.includes('ادارة') || name.includes('admin') || name.includes('owner')) return 'admin';
+            if (name.includes('مشرف') || name.includes('mod')) return 'mod';
+            if (name.includes('دعم') || name.includes('support') || name.includes('helper')) return 'support';
+            if (name.includes('vip') || name.includes('مميز')) return 'vip';
+            if (name.includes('بوستر') || name.includes('booster')) return 'booster';
+            if (name.includes('مالك') || name.includes('المالك')) return 'owner';
+            
+            return 'member';
+        }
+
+        // ⭐⭐ دالة استخراج اللون من بيانات الرتبة
+        function getRoleColor(roleId, roleName, roleColors) {
+            if (roleColors && roleColors[roleId]) {
+                return roleColors[roleId];
+            }
+            
+            // ألوان افتراضية حسب الفئة
+            const category = getRoleCategory(roleName);
+            const categoryColors = {
+                'admin': '#f04747',
+                'mod': '#43b581',
+                'support': '#3498db',
+                'owner': '#faa61a',
+                'vip': '#9b59b6',
+                'booster': '#ff7b9c',
+                'member': '#95a5a6'
+            };
+            
+            return categoryColors[category] || '#5865f2';
+        }
     
         function renderTranscript(ticketData) {
             const container = document.getElementById('transcript-container');
@@ -357,54 +515,13 @@
             if (loading) loading.style.display = 'none';
             
             if (!ticketData) {
-                container.innerHTML = '<div style="text-align:center;padding:50px;color:#f44336;">❌ بيانات غير صالحة</div>';
+                container.innerHTML = '<div style="text-align:center;padding:60px;color:#f44336;font-size:18px;">❌ بيانات غير صالحة</div>';
                 return;
             }
             
-            const users = {};
-            const roles = {};
-            
-            // إضافة المستخدمين الأساسيين
-            if (ticketData.userId) users[ticketData.userId] = ticketData.userName || 'مستخدم';
-            if (ticketData.claimedBy) users[ticketData.claimedBy] = ticketData.claimedByName || 'مسؤول';
-            if (ticketData.closedBy) users[ticketData.closedBy] = ticketData.closedByName || 'مسؤول';
-            
-            // إضافة الرتب من البيانات
-            if (ticketData.roles) {
-                Object.assign(roles, ticketData.roles);
-            }
-            
-            // إضافة المستخدمين الإضافيين
-            if (ticketData.users) {
-                Object.assign(users, ticketData.users);
-            }
-            
-            // جمع المستخدمين والرتب من الرسائل
-            if (ticketData.messages) {
-                ticketData.messages.forEach(msg => {
-                    if (msg.authorId && msg.author) users[msg.authorId] = msg.author;
-                    
-                    if (msg.content) {
-                        // منشن المستخدمين
-                        const userMatches = msg.content.match(/<@!?(\d+)>/g);
-                        if (userMatches) {
-                            userMatches.forEach(m => {
-                                const id = m.replace(/<@!?|>/g, '');
-                                if (!users[id]) users[id] = 'مستخدم';
-                            });
-                        }
-                        
-                        // منشن الرتب
-                        const roleMatches = msg.content.match(/<@&(\d+)>/g);
-                        if (roleMatches) {
-                            roleMatches.forEach(m => {
-                                const id = m.replace(/<@&|>/g, '');
-                                if (!roles[id]) roles[id] = 'رتبة';
-                            });
-                        }
-                    }
-                });
-            }
+            const users = ticketData.users || {};
+            const roles = ticketData.roles || {};
+            const roleColors = ticketData.roleColors || {};
             
             let messagesHtml = '';
             
@@ -418,9 +535,9 @@
                 const questions = ticketData.questions || {};
                 
                 let answersText = '';
-                if (answers.answer1) answersText += `<strong>❓ ${questions.required1 || 'السؤال الأول'}:</strong> ${answers.answer1}<br>`;
-                if (answers.answer2) answersText += `<strong>❓ ${questions.required2 || 'السؤال الثاني'}:</strong> ${answers.answer2}<br>`;
-                if (answers.answer3 && answers.answer3 !== 'لم يتم الإجابة') answersText += `<strong>❓ ${questions.optional1 || 'سؤال اختياري'}:</strong> ${answers.answer3}<br>`;
+                if (answers.answer1) answersText += `<div style="margin-bottom:10px;"><strong>❓ ${questions.required1 || 'السؤال الأول'}:</strong> ${answers.answer1}</div>`;
+                if (answers.answer2) answersText += `<div style="margin-bottom:10px;"><strong>❓ ${questions.required2 || 'السؤال الثاني'}:</strong> ${answers.answer2}</div>`;
+                if (answers.answer3 && answers.answer3 !== 'لم يتم الإجابة') answersText += `<div><strong>❓ ${questions.optional1 || 'سؤال اختياري'}:</strong> ${answers.answer3}</div>`;
                 
                 if (answersText) {
                     messagesHtml += `
@@ -431,7 +548,7 @@
                                     <span class="author">${openerName}</span>
                                     <span class="timestamp">${formatDate(ticketData.openedAt)}</span>
                                 </div>
-                                <div class="message-text"><strong>📝 إجابات الأسئلة:</strong><br>${answersText}</div>
+                                <div class="message-text"><strong style="font-size:18px;">📝 إجابات الأسئلة:</strong><br>${answersText}</div>
                             </div>
                         </div>
                     `;
@@ -444,21 +561,30 @@
                     const isBot = msg.authorId === ticketData.botId;
                     const isSupport = ticketData.addedAdmins?.includes(msg.authorId) || msg.authorId === ticketData.claimedBy;
                     const authorClass = isBot ? 'bot' : (isSupport ? 'support' : '');
-                    const authorName = users[msg.authorId] || msg.author || 'مستخدم';
                     
-                    // معالجة المحتوى
+                    const authorName = users[msg.authorId] || msg.author || msg.authorUsername || 'مستخدم';
+                    
+                    // ⭐⭐ معالجة المنشنات وعرضها بالألوان
                     let displayContent = msg.content || '';
                     
-                    // تحويل منشن المستخدمين
+                    // منشن المستخدمين
                     displayContent = displayContent.replace(/<@!?(\d+)>/g, (match, id) => {
-                        const name = users[id];
-                        return name ? `<span class="user-mention">@${name}</span>` : match;
+                        const userName = users[id];
+                        if (userName) {
+                            return `<span class="user-mention" title="ID: ${id}">@${userName}</span>`;
+                        }
+                        return `<span class="user-mention" title="ID: ${id}">@مستخدم</span>`;
                     });
                     
-                    // تحويل منشن الرتب
+                    // ⭐⭐⭐ منشن الرتب - الأهم هنا مع الألوان
                     displayContent = displayContent.replace(/<@&(\d+)>/g, (match, id) => {
                         const roleName = roles[id];
-                        return roleName ? `<span class="role-mention">@${roleName}</span>` : match;
+                        if (roleName) {
+                            const roleColor = getRoleColor(id, roleName, roleColors);
+                            const category = getRoleCategory(roleName);
+                            return `<span class="role-mention" style="background: ${roleColor};" data-category="${category}" title="ID: ${id}">@${roleName}</span>`;
+                        }
+                        return match;
                     });
                     
                     messagesHtml += `
@@ -475,19 +601,25 @@
                     // الامبيدات
                     if (msg.embeds && msg.embeds.length > 0) {
                         msg.embeds.forEach(embed => {
-                            messagesHtml += `<div class="embed" style="border-left-color: ${embed.color || '#5865f2'}">`;
+                            messagesHtml += `<div class="embed" style="border-right-color: ${embed.color || '#5865f2'}">`;
                             if (embed.title) messagesHtml += `<div class="embed-title">${embed.title}</div>`;
                             if (embed.description) messagesHtml += `<div class="embed-description">${embed.description}</div>`;
                             
                             if (embed.fields) {
                                 embed.fields.forEach(field => {
                                     let fieldValue = field.value || '';
+                                    
+                                    // معالجة المنشنات في قيمة الحقل
                                     fieldValue = fieldValue.replace(/<@!?(\d+)>/g, (m, id) => {
                                         const name = users[id];
-                                        return name ? `@${name}` : m;
+                                        return name ? `<span class="user-mention" style="display:inline;padding:2px 8px;">@${name}</span>` : m;
                                     }).replace(/<@&(\d+)>/g, (m, id) => {
                                         const roleName = roles[id];
-                                        return roleName ? `@${roleName}` : m;
+                                        if (roleName) {
+                                            const roleColor = getRoleColor(id, roleName, roleColors);
+                                            return `<span class="role-mention" style="background: ${roleColor}; display:inline;padding:2px 8px;">@${roleName}</span>`;
+                                        }
+                                        return m;
                                     });
                                     
                                     messagesHtml += `
@@ -499,7 +631,7 @@
                                 });
                             }
                             
-                            if (embed.image) messagesHtml += `<img class="embed-image" src="${embed.image}">`;
+                            if (embed.image) messagesHtml += `<img class="embed-image" src="${embed.image}" loading="lazy">`;
                             messagesHtml += `</div>`;
                         });
                     }
@@ -507,7 +639,7 @@
                     // المرفقات
                     if (msg.attachments && msg.attachments.length > 0) {
                         msg.attachments.forEach(att => {
-                            messagesHtml += `<div class="attachment"><a class="attachment-link" href="${att.url}" target="_blank">📎 ${att.name}</a></div>`;
+                            messagesHtml += `<div style="margin-top:10px;"><a class="attachment-link" href="${att.url}" target="_blank" rel="noopener noreferrer">📎 ${att.name}</a></div>`;
                         });
                     }
                     
@@ -532,10 +664,10 @@
                 <div class="header">
                     <h1>📋 نسخة التذكرة <span>${ticketData.fullId || ticketData.id || 'غير معروف'}</span></h1>
                     <div class="ticket-info">
-                        <div>👤 ${users[ticketData.userId] || ticketData.userName || 'مستخدم'}</div>
-                        <div>📂 ${ticketData.category || 'قسم غير محدد'}</div>
-                        <div>📅 ${formatDate(ticketData.openedAt)}</div>
-                        ${ticketData.closedAt ? `<div>🔒 ${formatDate(ticketData.closedAt)}</div>` : ''}
+                        <div><strong>👤</strong> ${users[ticketData.userId] || ticketData.userName || 'مستخدم'}</div>
+                        <div><strong>📂</strong> ${ticketData.category || 'قسم غير محدد'}</div>
+                        <div><strong>📅</strong> ${formatDate(ticketData.openedAt)}</div>
+                        ${ticketData.closedAt ? `<div><strong>🔒</strong> ${formatDate(ticketData.closedAt)}</div>` : ''}
                     </div>
                 </div>
     
@@ -556,10 +688,13 @@
     
                 <div class="action-buttons">
                     <button class="btn btn-primary" onclick="window.print()">🖨️ طباعة</button>
-                    <button class="btn btn-success" onclick="downloadTranscript()">📥 تحميل</button>
+                    <button class="btn btn-success" onclick="downloadTranscript()">📥 تحميل HTML</button>
                 </div>
     
-                <div class="footer"><p>نظام تذاكر عائلة العمدة - ${formatDate(Math.floor(Date.now() / 1000))}</p></div>
+                <div class="footer">
+                    <p>نظام تذاكر عائلة العمدة • تم إنشاء هذه النسخة في ${formatDate(Math.floor(Date.now() / 1000))}</p>
+                    <p style="margin-top:8px;font-size:12px;">جميع الحقوق محفوظة © 2026</p>
+                </div>
             `;
     
             container.innerHTML = fullHtml;
@@ -568,7 +703,7 @@
         function downloadTranscript() {
             const content = document.getElementById('transcript-container').innerHTML;
             const styles = document.querySelector('style').innerHTML;
-            const html = `<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><title>نسخة التذكرة</title><style>${styles}</style></head><body>${content}</body></html>`;
+            const html = `<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>نسخة التذكرة</title><style>${styles}</style></head><body>${content}</body></html>`;
             const blob = new Blob([html], { type: 'text/html' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -599,11 +734,11 @@
                     return;
                 }
                 
-                container.innerHTML = `<div class="system-message" style="padding:50px;">❌ لا توجد بيانات للتذكرة</div>`;
+                container.innerHTML = `<div class="system-message" style="padding:60px;">❌ لا توجد بيانات للتذكرة</div>`;
             } catch (error) {
-                container.innerHTML = `<div class="system-message" style="padding:50px;color:#f44336;">❌ خطأ: ${error.message}</div>`;
+                container.innerHTML = `<div class="system-message" style="padding:60px;color:#f44336;">❌ خطأ: ${error.message}</div>`;
             }
         };
     </script>
 </body>
-</html> 
+</html>
