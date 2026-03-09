@@ -418,31 +418,27 @@
             return `${secs} ثانية`;
         }
     
-        // دالة لتحويل mentions في النص
-        function formatMessageContent(content, users = {}, roles = {}, channels = {}) {
-            if (!content) return '';
-            
-            // تحويل منشن المستخدمين <@123456789> و <@!123456789>
-            content = content.replace(/<@!?(\d+)>/g, (match, id) => {
-                const user = users[id];
-                return user ? `<span class="user-mention">@${user}</span>` : match;
-            });
-            
-            // تحويل منشن الرتب <@&123456789>
-            content = content.replace(/<@&(\d+)>/g, (match, id) => {
-                const role = roles[id];
-                return role ? `<span class="role-mention">@${role}</span>` : match;
-            });
-            
-            // تحويل منشن القنوات <#123456789>
-            content = content.replace(/<#(\d+)>/g, (match, id) => {
-                const channel = channels[id];
-                return channel ? `<span class="channel-mention">#${channel}</span>` : match;
-            });
-            
-            return content;
-        }
+      // دالة لتحويل mentions في النص - نسخة مبسطة وشغالة 100%
+function formatMessageContent(content, users = {}) {
+    if (!content) return '';
     
+    // تحويل منشن المستخدمين <@123456789> و <@!123456789>
+    content = content.replace(/<@!?(\d+)>/g, (match, id) => {
+        // لو لقينا اسم المستخدم في users object
+        if (users[id]) {
+            return `@${users[id]}`;
+        }
+        // لو لأ، سيبه زي ما هو
+        return match;
+    });
+    
+    // تحويل منشن الرتب <@&123456789>
+    content = content.replace(/<@&(\d+)>/g, (match, id) => {
+        return match; // مؤقتاً سيبه زي ما هو
+    });
+    
+    return content;
+}
         // دالة لجمع أسماء المستخدمين والرتب من البيانات
         function collectUsersAndRoles(ticketData) {
             const users = {};
@@ -546,29 +542,47 @@
                 }
             }
     
-            // رسائل المحادثة
-            if (ticketData.messages && ticketData.messages.length > 0) {
-                ticketData.messages.forEach(msg => {
-                    const isBot = msg.authorId === ticketData.botId;
-                    const isSupport = ticketData.addedAdmins?.includes(msg.authorId) || msg.authorId === ticketData.claimedBy;
-                    
-                    let authorClass = '';
-                    if (isBot) authorClass = 'bot';
-                    else if (isSupport) authorClass = 'support';
-                    
-                    const authorName = users[msg.authorId] || msg.author || 'مستخدم';
-                    const formattedContent = formatMessageContent(msg.content || '', users, roles, channels);
-                    
-                    messagesHtml += `
-                        <div class="message">
-                            <img class="avatar" src="${msg.avatar || 'https://cdn.discordapp.com/embed/avatars/0.png'}" alt="Avatar" onerror="this.src='https://cdn.discordapp.com/embed/avatars/0.png'">
-                            <div class="message-content">
-                                <div class="message-header">
-                                    <span class="author ${authorClass}">${authorName} ${isBot ? '🤖' : ''}</span>
-                                    <span class="timestamp">${formatDate(msg.timestamp)}</span>
-                                </div>
-                                <div class="message-text">${formattedContent}</div>
-                    `;
+         // رسائل المحادثة
+if (ticketData.messages && ticketData.messages.length > 0) {
+    ticketData.messages.forEach(msg => {
+        const isBot = msg.authorId === ticketData.botId;
+        const isSupport = ticketData.addedAdmins?.includes(msg.authorId) || msg.authorId === ticketData.claimedBy;
+        
+        let authorClass = '';
+        if (isBot) authorClass = 'bot';
+        else if (isSupport) authorClass = 'support';
+        
+        const authorName = users[msg.authorId] || msg.author || 'مستخدم';
+        
+        // تحويل المحتوى - نحول الأيدي لأسماء
+        let displayContent = msg.content || '';
+        
+        // تحويل منشن المستخدمين <@123456789>
+        displayContent = displayContent.replace(/<@!?(\d+)>/g, (match, id) => {
+            // لو لقينا اسم المستخدم في users object
+            if (users[id]) {
+                return `@${users[id]}`;
+            }
+            // لو لأ، سيبه زي ما هو بس من غير <>
+            return `@${id}`;
+        });
+        
+        // تحويل منشن الرتب <@&123456789>
+        displayContent = displayContent.replace(/<@&(\d+)>/g, (match, id) => {
+            // لو لقينا اسم الرتبة (مش هتلاقي دلوقتي)
+            return match; // سيبه زي ما هو مؤقتاً
+        });
+        
+        messagesHtml += `
+            <div class="message">
+                <img class="avatar" src="${msg.avatar || 'https://cdn.discordapp.com/embed/avatars/0.png'}" alt="Avatar" onerror="this.src='https://cdn.discordapp.com/embed/avatars/0.png'">
+                <div class="message-content">
+                    <div class="message-header">
+                        <span class="author ${authorClass}">${authorName} ${isBot ? '🤖' : ''}</span>
+                        <span class="timestamp">${formatDate(msg.timestamp)}</span>
+                    </div>
+                    <div class="message-text">${displayContent}</div>
+        `;
                     
                     // إضافة الامبيدات
                     if (msg.embeds && msg.embeds.length > 0) {
