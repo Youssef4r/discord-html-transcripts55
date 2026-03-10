@@ -396,7 +396,7 @@
             if (secs > 0) result += `${secs} ثانية`;
             return result || 'أقل من ثانية';
         }
-
+    
         function getRoleColor(roleName, roleId, roleColors) {
             if (roleColors && roleColors[roleId]) return roleColors[roleId];
             if (!roleName) return '#5865f2';
@@ -634,17 +634,17 @@
             const title = document.querySelector('title').innerHTML;
             
             const html = `<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${title}</title>
-    <style>${styles}</style>
-</head>
-<body>
-    ${container.outerHTML}
-</body>
-</html>`;
+    <html lang="ar" dir="rtl">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>${title}</title>
+        <style>${styles}</style>
+    </head>
+    <body>
+        ${container.outerHTML}
+    </body>
+    </html>`;
             
             const blob = new Blob([html], { type: 'text/html' });
             const url = URL.createObjectURL(blob);
@@ -661,43 +661,52 @@
             const container = document.getElementById('transcript-container');
             const loading = document.getElementById('loading');
             const urlParam = getUrlParameter('url');
-            const dataParam = getUrlParameter('data');
             
             try {
-                // محاولة جلب البيانات من الـ URL
                 if (urlParam) {
                     try {
+                        // محاولة جلب البيانات من الرابط
                         const response = await fetch(urlParam);
                         if (response.ok) {
-                            const ticketData = await response.json();
-                            renderTranscript(ticketData);
+                            // التحقق من نوع المحتوى
+                            const contentType = response.headers.get('content-type');
+                            
+                            if (contentType && contentType.includes('application/json')) {
+                                // لو JSON، نعرضه
+                                const ticketData = await response.json();
+                                renderTranscript(ticketData);
+                            } else {
+                                // لو HTML، نعرضه مباشرة
+                                const htmlContent = await response.text();
+                                container.innerHTML = htmlContent;
+                                if (loading) loading.style.display = 'none';
+                            }
                             return;
+                        } else {
+                            throw new Error('فشل تحميل الملف');
                         }
                     } catch (fetchError) {
                         console.log('فشل جلب البيانات من الرابط:', fetchError);
+                        if (loading) loading.style.display = 'none';
+                        container.innerHTML = `
+                            <div class="error">
+                                <h2 style="margin-bottom: 20px;">❌ لا توجد بيانات للتذكرة</h2>
+                                <p>الرجاء التأكد من الرابط المستخدم</p>
+                                <p style="margin-top: 20px; color: #72767d;">يجب استخدام الرابط الصحيح من البوت</p>
+                                <p style="margin-top: 10px; font-size: 12px; color: #f04747;">${fetchError.message}</p>
+                            </div>
+                        `;
                     }
+                } else {
+                    // لو مفيش url parameter
+                    if (loading) loading.style.display = 'none';
+                    container.innerHTML = `
+                        <div class="error">
+                            <h2 style="margin-bottom: 20px;">❌ لا يوجد رابط للتذكرة</h2>
+                            <p>الرجاء استخدام الرابط المقدم من البوت</p>
+                        </div>
+                    `;
                 }
-                
-                // محاولة استخدام البيانات المضمنة في الرابط
-                if (dataParam) {
-                    try {
-                        const ticketData = JSON.parse(decodeURIComponent(dataParam));
-                        renderTranscript(ticketData);
-                        return;
-                    } catch (parseError) {
-                        console.log('فشل تحليل البيانات:', parseError);
-                    }
-                }
-                
-                // عرض رسالة خطأ منسقة
-                if (loading) loading.style.display = 'none';
-                container.innerHTML = `
-                    <div class="error">
-                        <h2 style="margin-bottom: 20px;">❌ لا توجد بيانات للتذكرة</h2>
-                        <p>الرجاء التأكد من الرابط المستخدم</p>
-                        <p style="margin-top: 20px; color: #72767d;">يجب استخدام الرابط الصحيح من البوت</p>
-                    </div>
-                `;
             } catch (error) {
                 console.error('خطأ:', error);
                 if (loading) loading.style.display = 'none';
@@ -705,5 +714,6 @@
             }
         };
     </script>
+      
 </body>
 </html>
