@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📋 نسخة التذكرة دعم فني-59</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Whitney', 'Helvetica Neue', 'Segoe UI', Arial, sans-serif;
+        }
+
+        body {
+            background: #1e1f22;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: #2b2d31;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e1f22 0%, #2b2d31 100%);
+            padding: 30px;
+            border-bottom: 1px solid #3c3f45;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #5865f2, #57f287, #faa61a, #ed4245);
+        }
+
+        .header h1 {
+            color: #fff;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header h1 span {
+            background: #5865f2;
+            padding: 5px 15px;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .guild-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .guild-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+
+        .guild-name {
+            color: #b5bac1;
+            font-size: 14px;
+        }
+
+        .ticket-id {
+            color: #b5bac1;
+            font-size: 14px;
+            margin-bottom: 20px;
+            padding: 10px;
+            background: #1e1f22;
+            border-radius: 8px;
+            display: inline-block;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .info-card {
+            background: #1e1f22;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #3c3f45;
+        }
+
+        .info-card .label {
+            color: #b5bac1;
+            font-size: 12px;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-card .value {
+            color: #fff;
+            font-size: 16px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-card .value img {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+        }
+
+        .questions-section {
+            background: #1e1f22;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid #3c3f45;
+        }
+
+        .questions-section h3 {
+            color: #fff;
+            margin-bottom: 15px;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .question-item {
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #2b2d31;
+            border-radius: 8px;
+        }
+
+        .question {
+            color: #5865f2;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .answer {
+            color: #fff;
+            padding: 10px;
+            background: #1e1f22;
+            border-radius: 6px;
+            white-space: pre-wrap;
+        }
+
+        .chat-container {
+            padding: 20px;
+            background: #2b2d31;
+        }
+
+        .message {
+            display: flex;
+            padding: 15px 0;
+            border-bottom: 1px solid #3c3f45;
+            transition: background 0.2s;
+        }
+
+        .message:hover {
+            background: #323439;
+        }
+
+        .avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            margin-left: 15px;
+            flex-shrink: 0;
+            object-fit: cover;
+        }
+
+        .message-content {
+            flex: 1;
+        }
+
+        .message-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+        }
+
+        .author {
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .timestamp {
+            color: #949ba4;
+            font-size: 12px;
+        }
+
+        .message-text {
+            color: #dbdee1;
+            font-size: 15px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .mention {
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-weight: 500;
+            display: inline-block;
+            margin: 0 2px;
+        }
+
+        .user-mention {
+            background: #5865f2;
+            color: white !important;
+        }
+
+        .role-mention {
+            background: #5865f2;
+            color: white !important;
+        }
+
+        .channel-mention {
+            background: #3c3f45;
+            color: #00aff4;
+        }
+
+        .embed {
+            margin-top: 10px;
+            background: #1e1f22;
+            border-right: 4px solid;
+            border-radius: 8px;
+            padding: 15px;
+            max-width: 600px;
+        }
+
+        .embed-title {
+            color: #fff;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+
+        .embed-description {
+            color: #dbdee1;
+            font-size: 14px;
+            margin-bottom: 10px;
+            white-space: pre-wrap;
+        }
+
+        .embed-field {
+            margin-top: 10px;
+        }
+
+        .embed-field-name {
+            color: #b5bac1;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .embed-field-value {
+            color: #dbdee1;
+            font-size: 14px;
+            white-space: pre-wrap;
+        }
+
+        .embed-image {
+            max-width: 100%;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        .embed-thumbnail {
+            max-width: 80px;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+
+        .attachment {
+            margin-top: 8px;
+        }
+
+        .attachment a {
+            color: #00aff4;
+            text-decoration: none;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 10px;
+            background: #1e1f22;
+            border-radius: 20px;
+        }
+
+        .attachment a:hover {
+            text-decoration: underline;
+        }
+
+        .sticker {
+            max-width: 160px;
+            margin-top: 8px;
+            border-radius: 8px;
+        }
+
+        .system-message {
+            background: #1e1f22;
+            color: #b5bac1;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 20px 0;
+            border: 1px dashed #3c3f45;
+        }
+
+        .system-message strong {
+            color: #fff;
+        }
+
+        .stats-bar {
+            background: #1e1f22;
+            padding: 20px;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            border-top: 1px solid #3c3f45;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            color: #fff;
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .stat-label {
+            color: #b5bac1;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            padding: 20px;
+            background: #1e1f22;
+            justify-content: center;
+            flex-wrap: wrap;
+            border-top: 1px solid #3c3f45;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            border: none;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: #5865f2;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #4752c4;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: #57f287;
+            color: #1e1f22;
+        }
+
+        .btn-success:hover {
+            background: #46c572;
+            transform: translateY(-2px);
+        }
+
+        .footer {
+            background: #1e1f22;
+            padding: 15px;
+            color: #949ba4;
+            font-size: 12px;
+            text-align: center;
+            border-top: 1px solid #3c3f45;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 0;
+                border-radius: 0;
+            }
+            
+            .message {
+                flex-direction: column;
+            }
+            
+            .avatar {
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="guild-info">
+                <img class="guild-icon" src="https://cdn.discordapp.com/icons/1458507516764753943/07ff38d46e35f3cc827606d5b42511d9.webp?size=256" onerror="this.style.display='none'">
+                <span class="guild-name"># - 𝙀𝙡𝙊𝙢𝙙𝙖 𝙁𝙖𝙢𝙞𝙡𝙮</span>
+            </div>
+            
+            <h1>
+                📋 نسخة التذكرة
+                <span>دعم فني-59</span>
+            </h1>
+            
+            <div class="ticket-id">
+                🆔 دعم فني-59 • 📂 دعم فني
+            </div>
+            
+            <div class="info-grid">
+                <div class="info-card">
+                    <div class="label">صاحب التذكرة</div>
+                    <div class="value">
+                        <img src="https://cdn.discordapp.com/avatars/1443976695328804935/6d08ac742023c11855c9638fe627c0da.webp?size=128" onerror="this.src='https://cdn.discordapp.com/embed/avatars/0.png'">
+                        [A-03]  Homos
+                    </div>
+                </div>
+                
+                
+                <div class="info-card">
+                    <div class="label">تم الاستلام بواسطة</div>
+                    <div class="value">
+                        <img src="https://cdn.discordapp.com/avatars/1443976695328804935/6d08ac742023c11855c9638fe627c0da.webp?size=128" onerror="this.src='https://cdn.discordapp.com/embed/avatars/0.png'">
+                        [A-03]  Homos
+                    </div>
+                </div>
+                
+                
+                
+                <div class="info-card">
+                    <div class="label">تم الإغلاق بواسطة</div>
+                    <div class="value">
+                        <img src="https://cdn.discordapp.com/avatars/1443976695328804935/6d08ac742023c11855c9638fe627c0da.webp?size=128" onerror="this.src='https://cdn.discordapp.com/embed/avatars/0.png'">
+                        [A-03]  Homos
+                    </div>
+                </div>
+                
+                
+                <div class="info-card">
+                    <div class="label">تاريخ الفتح</div>
+                    <div class="value">١٠‏/٣‏/٢٠٢٦، ١:٥١:٤٣ م</div>
+                </div>
+                
+                <div class="info-card">
+                    <div class="label">تاريخ الإغلاق</div>
+                    <div class="value">١٠‏/٣‏/٢٠٢٦، ١:٥٢:٣٤ م</div>
+                </div>
+                
+                <div class="info-card">
+                    <div class="label">المدة</div>
+                    <div class="value">51ث</div>
+                </div>
+            </div>
+            
+            
+            <div class="info-card" style="margin-top: 10px;">
+                <div class="label">سبب الإغلاق</div>
+                <div class="value">sss</div>
+            </div>
+            
+        </div>
+        
+        
+        
+        <div class="chat-container">
+            <div class="system-message">
+                <strong>📌 بداية المحادثة</strong> - ١٠‏/٣‏/٢٠٢٦، ١:٥١:٤٣ م
+            </div>
+            
+            
+            <div class="message">
+                <img class="avatar" src="https://cdn.discordapp.com/avatars/1478979701891534970/f3db0c8df11cd947646af27e3341c184.webp?size=128" loading="lazy" onerror="this.src='https://cdn.discordapp.com/embed/avatars/0.png'">
+                <div class="message-content">
+                    <div class="message-header">
+                        <span class="author" style="color: #f1c40f">El Omda Ticket</span>
+                        <span class="timestamp">١٠‏/٣‏/٢٠٢٦، ١:٥١:٤٣ م</span>
+                    </div>
+                    <div class="message-text"><span class="mention user-mention" style="background: #5865f220; color: #5865f2">@[A-03]  Homos</span> <span class="mention role-mention" style="background: #e91e6320; color: #e91e63">@🎟️〢الدعم・الفني</span></div>
+                    
+            <div class="embed" style="border-color: #00ff00">
+                <div class="embed-title">🎫 دعم فني-59</div>
+                <div class="embed-description">**تم فتح تذكرة الدعم الفني**<br><br>👤 **صاحب التذكرة:** <@1443976695328804935><br>👨‍💼 **تم الاستلام بواسطة:** <@1443976695328804935> (youssef_ffr)<br>📂 **القسم:** دعم فني<br>📅 **تاريخ الفتح:** <t:1773143503:F><br>📅 **تاريخ الاستلام:** <t:1773143534:R><br>📊 **الحالة:** ✅ مستلمة</div>
+                
+                    <div class="embed-field">
+                        <div class="embed-field-name">📝 إجابات الأسئلة:</div>
+                        <div class="embed-field-value">────────────────</div>
+                    </div>
+                
+                    <div class="embed-field">
+                        <div class="embed-field-name">ما سبب فتحك للتذكره</div>
+                        <div class="embed-field-value">aa</div>
+                    </div>
+                
+                    <div class="embed-field">
+                        <div class="embed-field-name">الايدي الخاص بك دسكورد</div>
+                        <div class="embed-field-value">ssa</div>
+                    </div>
+                
+                
+                <img class="embed-thumbnail" src="https://cdn.discordapp.com/avatars/1443976695328804935/6d08ac742023c11855c9638fe627c0da.webp" loading="lazy">
+            </div>
+        
+                    
+                    
+                </div>
+            </div>
+        
+            <div class="message">
+                <img class="avatar" src="https://cdn.discordapp.com/avatars/1478979701891534970/f3db0c8df11cd947646af27e3341c184.webp?size=128" loading="lazy" onerror="this.src='https://cdn.discordapp.com/embed/avatars/0.png'">
+                <div class="message-content">
+                    <div class="message-header">
+                        <span class="author" style="color: #f1c40f">El Omda Ticket</span>
+                        <span class="timestamp">١٠‏/٣‏/٢٠٢٦، ١:٥٢:١٥ م</span>
+                    </div>
+                    <div class="message-text">✅ **تم استلام التذكرة بواسطة:** <span class="mention user-mention" style="background: #5865f220; color: #5865f2">@[A-03]  Homos</span> ([A-03]  Homos)</div>
+                    
+                    
+                    
+                </div>
+            </div>
+        
+            <div class="message">
+                <img class="avatar" src="https://cdn.discordapp.com/avatars/1443976695328804935/6d08ac742023c11855c9638fe627c0da.webp?size=128" loading="lazy" onerror="this.src='https://cdn.discordapp.com/embed/avatars/0.png'">
+                <div class="message-content">
+                    <div class="message-header">
+                        <span class="author" style="color: #e67e22">[A-03]  Homos</span>
+                        <span class="timestamp">١٠‏/٣‏/٢٠٢٦، ١:٥٢:١٦ م</span>
+                    </div>
+                    <div class="message-text">saddsa</div>
+                    
+                    
+                    
+                </div>
+            </div>
+        
+            <div class="message">
+                <img class="avatar" src="https://cdn.discordapp.com/avatars/1443976695328804935/6d08ac742023c11855c9638fe627c0da.webp?size=128" loading="lazy" onerror="this.src='https://cdn.discordapp.com/embed/avatars/0.png'">
+                <div class="message-content">
+                    <div class="message-header">
+                        <span class="author" style="color: #e67e22">[A-03]  Homos</span>
+                        <span class="timestamp">١٠‏/٣‏/٢٠٢٦، ١:٥٢:١٧ م</span>
+                    </div>
+                    <div class="message-text">sadsa</div>
+                    
+                    
+                    
+                </div>
+            </div>
+        
+            <div class="message">
+                <img class="avatar" src="https://cdn.discordapp.com/avatars/1443976695328804935/6d08ac742023c11855c9638fe627c0da.webp?size=128" loading="lazy" onerror="this.src='https://cdn.discordapp.com/embed/avatars/0.png'">
+                <div class="message-content">
+                    <div class="message-header">
+                        <span class="author" style="color: #e67e22">[A-03]  Homos</span>
+                        <span class="timestamp">١٠‏/٣‏/٢٠٢٦، ١:٥٢:١٨ م</span>
+                    </div>
+                    <div class="message-text">da</div>
+                    
+                    
+                    
+                </div>
+            </div>
+        
+            <div class="message">
+                <img class="avatar" src="https://cdn.discordapp.com/avatars/1443976695328804935/6d08ac742023c11855c9638fe627c0da.webp?size=128" loading="lazy" onerror="this.src='https://cdn.discordapp.com/embed/avatars/0.png'">
+                <div class="message-content">
+                    <div class="message-header">
+                        <span class="author" style="color: #e67e22">[A-03]  Homos</span>
+                        <span class="timestamp">١٠‏/٣‏/٢٠٢٦، ١:٥٢:١٩ م</span>
+                    </div>
+                    <div class="message-text"><span class="mention user-mention" style="background: #5865f220; color: #5865f2">@[A-03]  Homos</span></div>
+                    
+                    
+                    
+                </div>
+            </div>
+        
+            <div class="message">
+                <img class="avatar" src="https://cdn.discordapp.com/avatars/1443976695328804935/6d08ac742023c11855c9638fe627c0da.webp?size=128" loading="lazy" onerror="this.src='https://cdn.discordapp.com/embed/avatars/0.png'">
+                <div class="message-content">
+                    <div class="message-header">
+                        <span class="author" style="color: #e67e22">[A-03]  Homos</span>
+                        <span class="timestamp">١٠‏/٣‏/٢٠٢٦، ١:٥٢:٢١ م</span>
+                    </div>
+                    <div class="message-text"><span class="mention user-mention" style="background: #5865f220; color: #5865f2">@El Omda Ticket</span></div>
+                    
+                    
+                    
+                </div>
+            </div>
+        
+            <div class="message">
+                <img class="avatar" src="https://cdn.discordapp.com/avatars/1443976695328804935/6d08ac742023c11855c9638fe627c0da.webp?size=128" loading="lazy" onerror="this.src='https://cdn.discordapp.com/embed/avatars/0.png'">
+                <div class="message-content">
+                    <div class="message-header">
+                        <span class="author" style="color: #e67e22">[A-03]  Homos</span>
+                        <span class="timestamp">١٠‏/٣‏/٢٠٢٦، ١:٥٢:٢٥ م</span>
+                    </div>
+                    <div class="message-text"><span class="mention user-mention" style="background: #5865f220; color: #5865f2">@[A-19] Ahmed ElOmda.</span></div>
+                    
+                    
+                    
+                </div>
+            </div>
+        
+            <div class="message">
+                <img class="avatar" src="https://cdn.discordapp.com/avatars/1443976695328804935/6d08ac742023c11855c9638fe627c0da.webp?size=128" loading="lazy" onerror="this.src='https://cdn.discordapp.com/embed/avatars/0.png'">
+                <div class="message-content">
+                    <div class="message-header">
+                        <span class="author" style="color: #e67e22">[A-03]  Homos</span>
+                        <span class="timestamp">١٠‏/٣‏/٢٠٢٦، ١:٥٢:٢٧ م</span>
+                    </div>
+                    <div class="message-text"><span class="mention role-mention" style="background: #0902dc20; color: #0902dc">@🕵〢 Tester 𝐌𝐨𝐝𝐞𝐫𝐚𝐭𝐨𝐫</span></div>
+                    
+                    
+                    
+                </div>
+            </div>
+        
+            <div class="message">
+                <img class="avatar" src="https://cdn.discordapp.com/avatars/1478979701891534970/f3db0c8df11cd947646af27e3341c184.webp?size=128" loading="lazy" onerror="this.src='https://cdn.discordapp.com/embed/avatars/0.png'">
+                <div class="message-content">
+                    <div class="message-header">
+                        <span class="author" style="color: #f1c40f">El Omda Ticket</span>
+                        <span class="timestamp">١٠‏/٣‏/٢٠٢٦، ١:٥٢:٣٥ م</span>
+                    </div>
+                    <div class="message-text"></div>
+                    
+            <div class="embed" style="border-color: #ff0000">
+                <div class="embed-title">🔒 تم إغلاق التذكرة</div>
+                <div class="embed-description">**دعم فني-59**<br><br>👤 **صاحب التذكرة:** <@1443976695328804935><br>👨‍💼 **تم الإغلاق بواسطة:** <@1443976695328804935></div>
+                
+                    <div class="embed-field">
+                        <div class="embed-field-name">📅 تاريخ الفتح</div>
+                        <div class="embed-field-value"><t:1773143503:F></div>
+                    </div>
+                
+                    <div class="embed-field">
+                        <div class="embed-field-name">📅 تاريخ الإغلاق</div>
+                        <div class="embed-field-value"><t:1773143554:R></div>
+                    </div>
+                
+                    <div class="embed-field">
+                        <div class="embed-field-name">📝 سبب الإغلاق</div>
+                        <div class="embed-field-value">sss</div>
+                    </div>
+                
+                
+                
+            </div>
+        
+                    
+                    
+                </div>
+            </div>
+        
+            <div class="message">
+                <img class="avatar" src="https://cdn.discordapp.com/avatars/1478979701891534970/f3db0c8df11cd947646af27e3341c184.webp?size=128" loading="lazy" onerror="this.src='https://cdn.discordapp.com/embed/avatars/0.png'">
+                <div class="message-content">
+                    <div class="message-header">
+                        <span class="author" style="color: #f1c40f">El Omda Ticket</span>
+                        <span class="timestamp">١٠‏/٣‏/٢٠٢٦، ١:٥٢:٣٥ م</span>
+                    </div>
+                    <div class="message-text">**⚙️ أزرار التحكم النهائية:**</div>
+                    
+                    
+                    
+                </div>
+            </div>
+        
+            
+            <div class="system-message">
+                <strong>🔚 نهاية المحادثة</strong> - ١٠‏/٣‏/٢٠٢٦، ١:٥٢:٣٤ م
+            </div>
+        </div>
+        
+        <div class="stats-bar">
+            <div class="stat-item">
+                <div class="stat-value">11</div>
+                <div class="stat-label">إجمالي الرسائل</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">0</div>
+                <div class="stat-label">استدعاءات المستخدم</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">0</div>
+                <div class="stat-label">استدعاءات الدعم</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">0</div>
+                <div class="stat-label">الأداريين المضافين</div>
+            </div>
+        </div>
+        
+        <div class="action-buttons">
+            <button class="btn btn-primary" onclick="window.print()">
+                🖨️ طباعة
+            </button>
+            <button class="btn btn-success" onclick="downloadTranscript()">
+                📥 تحميل HTML
+            </button>
+        </div>
+        
+        <div class="footer">
+            <p>نظام تذاكر عائلة العمدة • تم إنشاء هذه النسخة في ١٠‏/٣‏/٢٠٢٦، ١:٥٢:٣٦ م</p>
+            <p style="margin-top: 5px; font-size: 11px;">تم حفظ جميع البيانات والمنشنات والرتب بألوانها</p>
+        </div>
+    </div>
+
+    <script>
+        function downloadTranscript() {
+            const html = document.documentElement.outerHTML;
+            const blob = new Blob([html], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'دعم فني-59.html';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>
